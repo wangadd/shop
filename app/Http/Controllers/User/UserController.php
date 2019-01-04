@@ -77,10 +77,16 @@ class UserController extends Controller
     {
         $pwd=$request->input('u_pwd');
         $qpwd=$request->input('u_qpwd');
+        if(empty($request->input('u_name'))){
+            exit('用户名不能为空');
+        }
+        if(empty($request->input('u_pwd'))){
+            exit('密码不能为空');
+        }
         if($pwd!==$qpwd){
             echo '密码和确认密码必须一致';exit;
         }else{
-            $pwd=md5($pwd);
+            $pwd=password_hash($pwd,PASSWORD_BCRYPT);
         }
         $data = [
             'name'  => $request->input('u_name'),
@@ -107,15 +113,22 @@ class UserController extends Controller
         $pwd=$request->input('u_pwd');
        $where=[
          'name'=>$u_name,
-         'pwd'=>md5($pwd)
        ];
-       $data=UserModel::where($where)->get()->toArray();
-
+       $data=UserModel::where($where)->first();
        if(empty($data)){
            echo '账号或密码有误';exit;
        }else{
-           echo '登录成功';
-           header("refresh:2;'/userlist'");
+           if( password_verify($pwd,$data->pwd) ){
+               echo "登录成功";
+               header("Refresh:3;url=/userlist");
+
+           }else{
+               die("密码不正确");
+           }
+
        }
     }
 }
+
+
+
