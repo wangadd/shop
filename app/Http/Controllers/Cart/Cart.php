@@ -51,7 +51,8 @@ class Cart extends Controller
         $token=$request->session()->get('u_token');
 
         $where=[
-            'goods_id'=>$goods_id
+            'goods_id'=>$goods_id,
+            'uid'=>$uid
         ];
         $arr=CartModel::where($where)->first();
         if(!empty($arr)){
@@ -59,8 +60,9 @@ class Cart extends Controller
             $updateinfo=[
                 'num'=>$num+$buy_num
             ];
-            $id=CartModel::updated($where,$updateinfo);
+            $id=CartModel::where($where)->update($updateinfo);
         }else{
+            echo json_encode(222);
             $data=[
                 'goods_id'=>$goods_id,
                 'num'=>$buy_num,
@@ -70,6 +72,14 @@ class Cart extends Controller
             ];
             $id=CartModel::insertGetId($data);
         }
+        $goodsWhere=[
+            'goods_id'=>$goods_id
+        ];
+        $goodsInfo=GoodsModel::where($goodsWhere)->first();
+        $goodsUpdate=[
+            'goods_stock'=>$goodsInfo->goods_stock-$buy_num
+        ];
+        $res=GoodsModel::where($goodsWhere)->update($goodsUpdate);
         if($id){
             $info=[
                 'code'=>1,
@@ -86,16 +96,32 @@ class Cart extends Controller
 
     }
     /** 删除商品 */
-    public function del($goods_id){
-        //判断 商品是否在 购物车中
-        $goods = session()->get('cart_goods');
-            //执行删除
-        foreach($goods as $k=>$v){
-            if($goods_id == $v['goods_id']) {
-                session()->pull('cart_goods.' . $k);
-                echo "删除成功";
-                header("refresh:2;url=/cartlist");
-            }
+    public function del(Request $request,$id){
+        if(empty($id)){
+            exit('此商品不在购物车中');
+        }
+        $uid=$request->session()->get('uid');
+        $where=[
+            'id'=>$id,
+            'uid'=>$uid
+        ];
+        $res=CartModel::where($where)->delete();
+        if($res){
+            $arr=CartModel::where($where)->first();
+            $goods_id=$arr->goods_id;
+            $num=$arr->num;
+            $goodsWhere=[
+                'goods_id'=>$goods_id
+            ];
+            $goodsInfo=GoodsModel::where($goodsWhere)->first();
+            $updateInfo=[
+                'goods_num'=>$goodsInfo->goods_num+$num,
+            ];
+            GoodsModel::where($goodsWhere)->update($updateInfo);
+            echo "删除成功";
+        }else{
+            echo "删除失败";
+            header("refresh:2;url=/cartlist");
         }
     }
 }

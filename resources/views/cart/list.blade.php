@@ -15,8 +15,8 @@
                 <td>{{$v->id}}</td>
                 <td>{{$v->goods_id}}</td>
                 <td>{{$v->num}}</td>
-                <td>{{$v->add_time}}</td>
-                <td><a href="/cartdel/<?php echo $v['goods_id']?>">删除</a></td>
+                <td>{{date("Y-m-d",$v->add_time)}}</td>
+                <td><a href="/cartdel/{{$v->id}}">删除</a></td>
             </tr>
         @endforeach
     </table>
