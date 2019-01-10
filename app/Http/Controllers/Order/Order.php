@@ -15,7 +15,7 @@ class Order extends Controller
    public function orderList(Request $request){
        $uid=$request->session()->get('uid');
        $where=[
-           'uid'=>$uid
+           'uid'=>$uid,
        ];
        $data=OrderModel::where($where)->orderBy('add_time','desc')->take(3)->get();
        $info=[
@@ -63,6 +63,7 @@ class Order extends Controller
            $res=GoodsModel::where($goodsWhere)->update($goodsUpdate);
            $arr=[
                'order_num'=>$order_sn,
+               'goods_id'=>$v->goods_id,
                'goods_name'=>$v->goods_name,
                'goods_price'=>$v->goods_price,
                'buy_number'=>$v->buy_number,
@@ -92,11 +93,49 @@ class Order extends Controller
             'order_num'=>$order_num,
             'uid'=>$request->session()->get('uid')
         ];
+        $orderInfo=OrderModel::where($where)->first();
         $info=DetailModel::where($where)->get();
         $data=[
+            'orderInfo'=>$orderInfo,
             'order_num'=>$order_num,
             'info'=>$info
         ];
         return view("order.detail",$data);
+   }
+   /** 取消订单 */
+   public function orderDel(Request $request,$order_num){
+        if(empty($order_num)){
+            exit('请选择要取消的订单');
+        }
+        $uid=$request->session()->get('uid');
+        //把订单状态改为取消
+        $orderwhere=[
+            'order_num'=>$order_num,
+            'uid'=>$uid
+        ];
+        $orderDate=[
+            'order_status'=>3
+        ];
+        $orderRes=OrderModel::where($orderwhere)->update($orderDate);
+       //把此订单中的商品归还库存
+        $detailInfo=DetailModel::where($orderwhere)->get();
+        foreach($detailInfo as $k=>$v){
+            $goods_id=[
+                'goods_id'=>$v->goods_id,
+            ];
+            $goodsInfo=GoodsModel::where($goods_id)->first();
+            $goodsArr=[
+                'goods_stock'=>$goodsInfo->goods_stock+$v->buy_number
+            ];
+            $goodsRes=GoodsModel::where($goods_id)->update($goodsArr);
+        }
+       //删除详情表中的相关数据
+        $detailRes=DetailModel::where($orderwhere)->delete();
+        if($orderRes&&$goodsRes&&$detailRes){
+            echo "订单取消成功";
+        }else{
+            echo "订单取消失败";
+        }
+        header("refresh:2;url=/orderlist");
    }
 }

@@ -73,6 +73,12 @@ Route::get('/cartdel/{id}','Cart\cart@del')->middleware('check.session');
 Route::get('/orderlist','Order\order@orderList')->middleware('check.session');
 Route::get('/addorder','Order\order@reorder')->middleware('check.session');
 Route::get('/orderdetail/{order_num}','Order\order@orderDetail')->middleware('check.session');
+Route::get('/orderdel/{order_num}','Order\order@orderDel')->middleware('check.session');
+
+/** 付款 */
+Route::get('/pay/{order_num}','Pay\pay@orderPay')->middleware('check.session');
+
+
 //中间件测试
 Route::get('/test/mid1','Test\TestController@mid1')->middleware('check.uid');        //中间件测试
 Route::get('/test/check_cookie','Test\TestController@checkCookie')->middleware('check.cookie');        //中间件测试
