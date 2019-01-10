@@ -64,12 +64,15 @@ Route::get('/userlogin','User\UserController@loginview');
 Route::post('/userlogin','User\UserController@userlogin');
 Route::get('/quit','User\UserController@quit');
 //购物车
-Route::get('/cart','Cart\Cart@cartGoods')->middleware('check.session');
+Route::get('/goods','Cart\Cart@cartGoods')->middleware('check.session');
 Route::get('/cartlist','Cart\Cart@cartlist')->middleware('check.session');
 Route::get('/create/{goods_id}','Cart\cart@create')->middleware('check.session');
 Route::post('/doadd','Cart\cart@doAdd')->middleware('check.session');
-Route::get('/cartdel/{goods_id}','Cart\cart@del')->middleware('check.session');
-
+Route::get('/cartdel/{id}','Cart\cart@del')->middleware('check.session');
+//订单
+Route::get('/orderlist','Order\order@orderList')->middleware('check.session');
+Route::get('/addorder','Order\order@reorder')->middleware('check.session');
+Route::get('/orderdetail/{order_num}','Order\order@orderDetail')->middleware('check.session');
 //中间件测试
 Route::get('/test/mid1','Test\TestController@mid1')->middleware('check.uid');        //中间件测试
 Route::get('/test/check_cookie','Test\TestController@checkCookie')->middleware('check.cookie');        //中间件测试

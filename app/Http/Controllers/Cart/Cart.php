@@ -62,7 +62,6 @@ class Cart extends Controller
             ];
             $id=CartModel::where($where)->update($updateinfo);
         }else{
-            echo json_encode(222);
             $data=[
                 'goods_id'=>$goods_id,
                 'num'=>$buy_num,
@@ -70,16 +69,9 @@ class Cart extends Controller
                 'uid'=>$uid,
                 'session_token'=>$token
             ];
-            $id=CartModel::insertGetId($data);
+            $id=CartModel::insert($data);
         }
-        $goodsWhere=[
-            'goods_id'=>$goods_id
-        ];
-        $goodsInfo=GoodsModel::where($goodsWhere)->first();
-        $goodsUpdate=[
-            'goods_stock'=>$goodsInfo->goods_stock-$buy_num
-        ];
-        $res=GoodsModel::where($goodsWhere)->update($goodsUpdate);
+
         if($id){
             $info=[
                 'code'=>1,
@@ -105,20 +97,21 @@ class Cart extends Controller
             'id'=>$id,
             'uid'=>$uid
         ];
+        $arr=CartModel::where($where)->first();
+        $goods_id=$arr->goods_id;
+        $num=$arr->num;
         $res=CartModel::where($where)->delete();
         if($res){
-            $arr=CartModel::where($where)->first();
-            $goods_id=$arr->goods_id;
-            $num=$arr->num;
             $goodsWhere=[
                 'goods_id'=>$goods_id
             ];
             $goodsInfo=GoodsModel::where($goodsWhere)->first();
             $updateInfo=[
-                'goods_num'=>$goodsInfo->goods_num+$num,
+                'goods_stock'=>$goodsInfo->goods_stock+$num,
             ];
             GoodsModel::where($goodsWhere)->update($updateInfo);
             echo "删除成功";
+            header("refresh:2;url=/cartlist");
         }else{
             echo "删除失败";
             header("refresh:2;url=/cartlist");

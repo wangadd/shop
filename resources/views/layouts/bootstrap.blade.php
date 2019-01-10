@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="csrf-token" content="{{csrf_token()}}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>BootStrap</title>
     <link rel="stylesheet" href="{{URL::asset('/bootstrap/css/bootstrap.min.css')}}">
 </head>
@@ -19,6 +19,7 @@
     <script src="{{URL::asset('/js/jquery-1.12.4.min.js')}}"></script>
     <script src="{{URL::asset('/bootstrap/js/bootstrap.min.js')}}"></script>
     <script src="{{URL::asset('/bootstrap/js/jquery-3.2.1.min.js')}}"></script>
+
 @show
 </body>
 </html>

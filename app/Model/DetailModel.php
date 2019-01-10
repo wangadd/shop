@@ -4,9 +4,8 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GoodsModel extends Model
+class DetailModel extends Model
 {
-    public $table = 'p_goods';
+    public $table = 'order_detail';
     public $timestamps=false;
-
 }

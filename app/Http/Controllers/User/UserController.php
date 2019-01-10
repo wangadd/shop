@@ -148,7 +148,7 @@ class UserController extends Controller
                 setcookie('token',$token,time()+86400,'/','',false,true);
                 $request->session()->put('u_token',$token);
                 $request->session()->put('uid',$uid);
-               header("Refresh:3;url=/cartlist");
+               header("Refresh:3;url=/goods");
 
            }else{
                die("密码不正确");

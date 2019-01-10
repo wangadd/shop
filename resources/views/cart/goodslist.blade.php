@@ -16,7 +16,7 @@
             <td>{{$v->goods_name}}</td>
             <td>{{$v->goods_stock}}</td>
             <td>{{$v->goods_price / 100}}</td>
-            <td><a href="/create/{{$v->goods_id}}">添加购物车</a></td>
+            <td><a href="/create/{{$v->goods_id}}">商品信息</a></td>
         </tr>
         @endforeach
     </table>
