@@ -74,6 +74,7 @@ Route::get('/orderlist','Order\order@orderList')->middleware('check.session');
 Route::get('/addorder','Order\order@reorder')->middleware('check.session');
 Route::get('/orderdetail/{order_num}','Order\order@orderDetail')->middleware('check.session');
 Route::get('/orderdel/{order_num}','Order\order@orderDel')->middleware('check.session');
+Route::get('/recoveorder/{order_num}','Order\order@recoveOrder')->middleware('check.session');
 
 /** 付款 */
 Route::get('/pay/{order_num}','Pay\pay@orderPay')->middleware('check.session');

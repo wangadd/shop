@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Pay;
 
 use App\Model\OrderModel;
+use App\Model\UserModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -19,6 +20,16 @@ class Pay extends Controller
         $data=[
             'order_status'=>2
         ];
+        $orderInfo=OrderModel::where($where)->first();
+        $amount=$orderInfo->order_amount;
+        $userWhere=[
+            'uid'=>$request->session()->get('uid'),
+        ];
+        $userInfo=UserModel::where($userWhere)->first();
+        $userDate=[
+            'sort'=>$userInfo->sort+$amount
+        ];
+        $res=UserModel::where($userWhere)->update($userDate);
         OrderModel::where($where)->update($data);
         header('refresh:2;url=/orderlist');
     }

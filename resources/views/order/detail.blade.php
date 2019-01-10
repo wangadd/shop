@@ -40,7 +40,7 @@
         <button class="btn btn-danger"><a href="/orderlist" style="text-decoration: none; color: #ffffff;">全部订单</a></button>
         <button class="btn btn-danger"><a href="/goods" style="text-decoration: none; color: #ffffff;">继续购买商品</a></button>
     @else
-        <button class="btn btn-danger"><a href="/pay/{{$order_num}}" style="text-decoration: none; color: #ffffff;">恢复订单</a></button>
+        <button class="btn btn-danger"><a href="/recoveorder/{{$order_num}}" style="text-decoration: none; color: #ffffff;">恢复订单</a></button>
         <button class="btn btn-danger"><a href="/orderlist" style="text-decoration: none; color: #ffffff;">全部订单</a></button>
         <button class="btn btn-danger"><a href="/goods" style="text-decoration: none; color: #ffffff;">继续购买商品</a></button>
         <button class="btn btn-danger">订单已取消</button>

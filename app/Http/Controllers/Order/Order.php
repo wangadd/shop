@@ -55,7 +55,7 @@ class Order extends Controller
            $order_amount += $v->goods_price * $v->buy_number;
            //减少库存
            $goodsWhere=[
-               'goods_id'=>$goods_id
+               'goods_id'=>$v->goods_id
            ];
            $goodsUpdate=[
                'goods_stock'=>$v->goods_stock-$v->buy_number
@@ -129,13 +129,53 @@ class Order extends Controller
             ];
             $goodsRes=GoodsModel::where($goods_id)->update($goodsArr);
         }
-       //删除详情表中的相关数据
-        $detailRes=DetailModel::where($orderwhere)->delete();
+       //软删除详情表中的相关数据
+        $data=[
+           'status'=>2
+        ];
+        $detailRes=DetailModel::where($orderwhere)->update($data);
         if($orderRes&&$goodsRes&&$detailRes){
             echo "订单取消成功";
         }else{
             echo "订单取消失败";
         }
         header("refresh:2;url=/orderlist");
+   }
+   /** 恢复订单 */
+   public function recoveOrder(Request $request,$order_num){
+       //修改订单状态
+       $uid=$request->session()->get('uid');
+       $orderwhere=[
+           'order_num'=>$order_num,
+           'uid'=>$uid
+       ];
+       $orderDate=[
+           'order_status'=>1
+       ];
+       $orderRes=OrderModel::where($orderwhere)->update($orderDate);
+
+       //修改商品表的库存
+       $detailInfo=DetailModel::where($orderwhere)->get();
+       foreach($detailInfo as $k=>$v){
+           $goods_id=[
+               'goods_id'=>$v->goods_id,
+           ];
+           $goodsInfo=GoodsModel::where($goods_id)->first();
+           $goodsArr=[
+               'goods_stock'=>$goodsInfo->goods_stock-$v->buy_number
+           ];
+           $goodsRes=GoodsModel::where($goods_id)->update($goodsArr);
+       }
+       //修改详情状态
+       $data=[
+           'status'=>1
+       ];
+       $detailRes=DetailModel::where($orderwhere)->update($data);
+       if($orderRes&&$goodsRes&&$detailRes){
+           echo "订单恢复成功";
+       }else{
+           echo "订单恢复失败";
+       }
+       header("refresh:2;url=/orderlist");
    }
 }
