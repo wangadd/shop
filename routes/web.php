@@ -29,7 +29,7 @@ Route::get('world2','Test\TestController@world2');
 Route::get('/user/test','User\UserController@test');
 Route::get('/user/{uid}','User\UserController@user');
 Route::get('/month/{m}/date/{d}','Test\TestController@md');
-Route::get('/name/{str?}','Test\TestController@showName');
+Route::get('/name/{str}','Test\TestController@showName');
 
 
 
