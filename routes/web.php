@@ -66,9 +66,9 @@ Route::get('/quit','User\UserController@quit');
 //购物车
 Route::get('/goods','Cart\Cart@cartGoods')->middleware('check.session');
 Route::get('/cartlist','Cart\Cart@cartlist')->middleware('check.session');
-Route::get('/create/{goods_id}','Cart\cart@create')->middleware('check.session');
+Route::get('/create/{goods_id}','Cart\Cart@create')->middleware('check.session');
 Route::post('/doadd','Cart\Cart@doAdd')->middleware('check.session');
-Route::get('/cartdel/{id}','Cart\cart@del')->middleware('check.session');
+Route::get('/cartdel/{id}','Cart\Cart@del')->middleware('check.session');
 //订单
 Route::get('/orderlist','Order\Order@orderList')->middleware('check.session');
 Route::get('/addorder','Order\Order@reorder')->middleware('check.session');
