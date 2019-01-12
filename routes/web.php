@@ -67,18 +67,18 @@ Route::get('/quit','User\UserController@quit');
 Route::get('/goods','Cart\Cart@cartGoods')->middleware('check.session');
 Route::get('/cartlist','Cart\Cart@cartlist')->middleware('check.session');
 Route::get('/create/{goods_id}','Cart\cart@create')->middleware('check.session');
-Route::post('/doadd','Cart\cart@doAdd')->middleware('check.session');
+Route::post('/doadd','Cart\Cart@doAdd')->middleware('check.session');
 Route::get('/cartdel/{id}','Cart\cart@del')->middleware('check.session');
 //订单
-Route::get('/orderlist','Order\order@orderList')->middleware('check.session');
-Route::get('/addorder','Order\order@reorder')->middleware('check.session');
-Route::get('/orderdetail/{order_num}','Order\order@orderDetail')->middleware('check.session');
-Route::get('/orderdel/{order_num}','Order\order@orderDel')->middleware('check.session');
-Route::get('/recoveorder/{order_num}','Order\order@recoveOrder')->middleware('check.session');
+Route::get('/orderlist','Order\Order@orderList')->middleware('check.session');
+Route::get('/addorder','Order\Order@reorder')->middleware('check.session');
+Route::get('/orderdetail/{order_num}','Order\Order@orderDetail')->middleware('check.session');
+Route::get('/orderdel/{order_num}','Order\Order@orderDel')->middleware('check.session');
+Route::get('/recoveorder/{order_num}','Order\Order@recoveOrder')->middleware('check.session');
 
 /** 付款 */
 Route::get('/pay/test/{order_num}','Pay\PayController@test');         //测试
-Route::get('/pay/{order_num}','Pay\pay@orderPay')->middleware('check.login.token');         //订单支付
+Route::get('/pay/{order_num}','Pay\Pay@orderPay')->middleware('check.login.token');         //订单支付
 Route::post('/pay/alipay/notify','Pay\PayController@notify');        //支付宝支付 通知回调
 
 //中间件测试
