@@ -32,5 +32,6 @@ class Pay extends Controller
         $res=UserModel::where($userWhere)->update($userDate);
         OrderModel::where($where)->update($data);
         header('refresh:2;url=/orderlist');
+        exit;
     }
 }
