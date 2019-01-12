@@ -77,8 +77,9 @@ Route::get('/orderdel/{order_num}','Order\order@orderDel')->middleware('check.se
 Route::get('/recoveorder/{order_num}','Order\order@recoveOrder')->middleware('check.session');
 
 /** 付款 */
-Route::get('/pay/{order_num}','Pay\pay@orderPay')->middleware('check.session');
-
+Route::get('/pay/test/{order_num}','Pay\PayController@test');         //测试
+Route::get('/pay/{order_num}','Pay\pay@orderPay')->middleware('check.login.token');         //订单支付
+Route::post('/pay/alipay/notify','Pay\PayController@notify');        //支付宝支付 通知回调
 
 //中间件测试
 Route::get('/test/mid1','Test\TestController@mid1')->middleware('check.uid');        //中间件测试

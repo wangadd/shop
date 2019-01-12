@@ -34,4 +34,5 @@ class Pay extends Controller
         header('refresh:2;url=/orderlist');
         exit;
     }
+
 }
