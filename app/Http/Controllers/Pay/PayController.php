@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\DB;
 
 class PayController extends Controller
 {
@@ -15,8 +16,8 @@ class PayController extends Controller
 
     public $app_id = '2016092200571887';
     public $gate_way = "http://openapi.alipaydev.com/gateway.do";
-    public $notify_url = 'http://shop.lening.com/pay/alipay/notify_url';
-    public $return_url = 'http://shop.lening.com/pay/alipay/return_url';
+    public $notify_url = 'http://king.tactshan.com/pay/alipay/notify_url';
+    public $return_url = 'http://king.tactshan.com/pay/alipay/return_url';
     public $rsaPrivateKeyFilePath = './key/priv.key';
 
 
@@ -172,7 +173,8 @@ class PayController extends Controller
         $data=$_GET;
         //验证订单号
         $orderWhere=[
-            'order_num'=>$_GET['out_trade_no']        ];
+            'order_num'=>$_GET['out_trade_no']
+        ];
         $orderInfo=OrderModel::where($orderWhere)->first();
         if(empty($orderInfo)){
             exit('订单不存在');
