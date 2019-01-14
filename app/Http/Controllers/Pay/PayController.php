@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Pay;
 
+use App\Model\DetailModel;
+use App\Model\OrderModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -11,9 +13,8 @@ class PayController extends Controller
 {
     //
 
-
     public $app_id = '2016092200571887';
-    public $gate_way = 'https://openapi.alipaydev.com/gateway.do';
+    public $gate_way = "http://openapi.alipaydev.com/gateway.do";
     public $notify_url = 'shop.lening.com/pay/alipay/notify';
     public $rsaPrivateKeyFilePath = './key/priv.key';
 
@@ -39,13 +40,26 @@ class PayController extends Controller
     }
 
 
-    public function test()
+    public function test(Request $request,$order_num)
     {
-
+        $where=[
+            'order_num'=>$order_num
+        ];
+        $detailInfo=DetailModel::where($where)->get();
+        if(empty($detailInfo)){
+            exit('请选择要结算的订单');
+        }
+        $total_amount=0;
+        $str='';
+        foreach ($detailInfo as $k=>$v){
+            $total_amount+=$v->goods_price*$v->buy_number;
+            $str.=$v->goods_name.',';
+        }
+        $str=rtrim($str,',');
         $bizcont = [
-            'subject'           => 'ancsd'. mt_rand(1111,9999).str_random(6),
-            'out_trade_no'      => 'oid'.date('YmdHis').mt_rand(1111,2222),
-            'total_amount'      => 0.01,
+            'subject'           => $str,
+            'out_trade_no'      => $order_num,
+            'total_amount'      =>$total_amount/100,
             'product_code'      => 'QUICK_WAP_WAY',
 
         ];
@@ -146,5 +160,52 @@ class PayController extends Controller
 
 
         return $data;
+    }
+
+    /**
+     * 支付宝同步通知回调
+     *
+     */
+    public function notify(){
+        $data=$_GET;
+        //验证订单号
+        $orderWhere=[
+            'order_number'=>$_GET['out_trade_no']        ];
+        $orderInfo=OrderModel::where($orderWhere)->first();
+        if(empty($orderInfo)){
+            exit('订单不存在');
+        }
+        //验证订单金额
+        if($orderInfo['order_amount']!=$_GET['total_amount']){
+            exit("订单金额有误");
+        }
+        //验证签名
+        $config=config('alipay_config');
+        require_once EXTEND_PATH . 'alipay/pagepay/service/AlipayTradeService.php';
+
+        $alipaySevice = new \AlipayTradeService($config);
+        $result = $alipaySevice->check($data);
+        if($result) {//验证成功
+            //查询接口
+            require_once EXTEND_PATH . 'alipay/pagepay/buildermodel/AlipayTradeQueryContentBuilder.php';
+            //商户订单号，商户网站订单系统中唯一订单号
+            $out_trade_no =$_GET['out_trade_no'];
+
+            //支付宝交易号
+            $trade_no ="";
+            //请二选一设置
+            //构造参数
+            $RequestBuilder = new \AlipayTradeQueryContentBuilder();
+            $RequestBuilder->setOutTradeNo($out_trade_no);
+            $RequestBuilder->setTradeNo($trade_no);
+
+            $aop = new \AlipayTradeService($config);
+
+            $response = $aop->Query($RequestBuilder);
+            if($response->trade_status=='TRADE_SUCCESS'){
+                echo "成功";
+            }
+            return view('pay.paysuccess');
+        }
     }
 }

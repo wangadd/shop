@@ -78,8 +78,8 @@ Route::get('/recoveorder/{order_num}','Order\Order@recoveOrder')->middleware('ch
 
 /** 付款 */
 Route::get('/pay/test/{order_num}','Pay\PayController@test');         //测试
-Route::get('/pay/{order_num}','Pay\Pay@orderPay')->middleware('check.login.token');         //订单支付
-Route::post('/pay/alipay/notify','Pay\PayController@notify');        //支付宝支付 通知回调
+Route::get('/pay/{order_num}','Pay\Pay@orderPay')->middleware('check.login.token');//订单支付
+Route::post('/pay/alipay/notify/{out_trade_no}','Pay\PayController@notify');        //支付宝支付 通知回调
 
 //中间件测试
 Route::get('/test/mid1','Test\TestController@mid1')->middleware('check.uid');        //中间件测试
