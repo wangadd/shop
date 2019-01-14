@@ -190,9 +190,29 @@ class PayController extends Controller
      *
      */
     public function notify_url(Request $request){
-            $arr=$_POST;
+            $bizcont = [
+                'subject'           => 'aaa',
+                'out_trade_no'      => '1901141404798815006',
+                'total_amount'      =>"860154/100",
+                'product_code'      => 'QUICK_WAP_WAY',
+
+            ];
+
+            $data = [
+                'app_id'   => $this->app_id,
+                'method'   => 'alipay.trade.wap.pay',
+                'format'   => 'JSON',
+                'charset'   => 'utf-8',
+                'sign_type'   => 'RSA2',
+                'timestamp'   => date('Y-m-d H:i:s'),
+                'version'   => '1.0',
+                'notify_url'   => $this->notify_url,
+                'return_url'=>$this->return_url,
+                'biz_content'   => json_encode($bizcont),
+            ];
+            var_dump($data);die;
             $where=[
-                'order_num'=>$_POST['order_num']
+                'order_num'=>$arr['order_num']
             ];
             $data=[
                 'order_status'=>2
