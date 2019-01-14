@@ -186,7 +186,7 @@ class PayController extends Controller
             exit("订单金额有误");
         }
         //验签 支付宝的公钥
-        if(!$this->verify()){
+        if(!$this->verify($data)){
             echo 'error';
         }
         $info=[
@@ -221,14 +221,6 @@ class PayController extends Controller
         echo 'success';
 
     }
-    /**
-     * 支付宝同步通知回调
-     */
-    public function aliReturn()
-    {
-
-    }
-
     //验签
     function verify($params) {
         $sign = $params['sign'];
@@ -269,6 +261,7 @@ class PayController extends Controller
         $where=[
             'order_num'=>$arr['order_num']
         ];
+        //修改订单状态
         $data=[
             'order_status'=>2
         ];
@@ -284,5 +277,11 @@ class PayController extends Controller
         ];
         $res=UserModel::where($userWhere)->update($userDate);
         OrderModel::where($where)->update($data);
+        //修改订单时间
+        $orderData=[
+            'pay_time'=>time()
+        ];
+        $res=OrderModel::where($where)->update($orderData);
+        return true;
     }
 }
