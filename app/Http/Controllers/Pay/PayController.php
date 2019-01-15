@@ -262,6 +262,14 @@ class PayController extends Controller
         $where=[
             'order_num'=>$arr['out_trade_no']
         ];
+        //修改订单详情表
+        $detailInfo=DetailModel::where($where)->get();
+        foreach ($detailInfo as $k=>$v){
+            $detail=[
+                'status'=>2
+            ];
+            DetailModel::where($where)->update($detail);
+        }
         //修改订单状态
         $data=[
             'order_status'=>2
