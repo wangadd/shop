@@ -305,6 +305,7 @@ class PayController extends Controller
         if(empty($orderInfo)){
             exit('还没有下单');
         }
+        $orderInfo=$orderInfo->toArray();
         foreach ($orderInfo as $k=>$v){
             if($v['order_status']==1){
                 if(time()-$v['add_time'] > 300){
