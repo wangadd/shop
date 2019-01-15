@@ -259,7 +259,7 @@ class PayController extends Controller
     public function dealOrder($arr)
     {
         $where=[
-            'order_num'=>$arr['order_num']
+            'order_num'=>$arr['out_trade_no']
         ];
         //修改订单状态
         $data=[
