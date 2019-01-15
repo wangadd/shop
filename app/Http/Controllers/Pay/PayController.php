@@ -323,5 +323,7 @@ class PayController extends Controller
                 }
             }
         }
+
+        echo "success"."\n";
     }
 }
