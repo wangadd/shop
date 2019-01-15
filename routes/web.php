@@ -78,7 +78,7 @@ Route::get('/recoveorder/{order_num}','Order\Order@recoveOrder')->middleware('ch
 
 /** 付款 */
 Route::get('/pay/test/{order_num}','Pay\PayController@test');         //测试
-Route::get('/pay/alipay/notify_url','Pay\PayController@notify_url');       //支付宝支付 异步通知回调
+Route::post('/pay/alipay/notify_url','Pay\PayController@notify_url');       //支付宝支付 异步通知回调
 Route::get('/pay/alipay/return_url','Pay\PayController@return_url');        //支付宝支付 同步通知回调
 
 //中间件测试
