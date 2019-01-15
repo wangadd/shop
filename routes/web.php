@@ -84,3 +84,6 @@ Route::get('/pay/alipay/return_url','Pay\PayController@return_url');        //�
 //中间件测试
 Route::get('/test/mid1','Test\TestController@mid1')->middleware('check.uid');        //中间件测试
 Route::get('/test/check_cookie','Test\TestController@checkCookie')->middleware('check.cookie');        //中间件测试
+
+//计划任务
+Route::get('/pay/delete','Pay/PayController/deleteOrder');
