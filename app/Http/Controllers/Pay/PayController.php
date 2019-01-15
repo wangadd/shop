@@ -308,17 +308,17 @@ class PayController extends Controller
         foreach ($orderInfo as $k=>$v){
             if($v['order_status']==1){
                 if(time()-$v['add_time'] > 300){
-                    $where=['order_num'=>$v['order_num']];
+                    $orderWhere=['order_num'=>$v['order_num']];
                     $data=[
                         'order_status'=>3
                     ];
-                    $res=OrderModel::where($where)->update($data);
-                    $detailInfo=DetailModel::where($where)->get();
+                    $res=OrderModel::where($orderWhere)->update($data);
+                    $detailInfo=DetailModel::where($orderWhere)->get();
                     foreach ($detailInfo as $k=>$v) {
                         $info=[
                             'status'=>2
                         ];
-                        $res2=DetailModel::where($where)->update($info);
+                        $res2=DetailModel::where($orderWhere)->update($info);
                     }
                 }
             }
