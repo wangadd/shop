@@ -64,7 +64,7 @@ Route::get('/userlogin','User\UserController@loginview');
 Route::post('/userlogin','User\UserController@userlogin');
 Route::get('/quit','User\UserController@quit');
 //购物车
-Route::get('/goods','Cart\Cart@cartGoods')->middleware('check.session');
+Route::get('/goodslist','Cart\Cart@cartGoods')->middleware('check.session');
 Route::get('/cartlist','Cart\Cart@cartlist')->middleware('check.session');
 Route::get('/create/{goods_id}','Cart\Cart@create')->middleware('check.session');
 Route::post('/doadd','Cart\Cart@doAdd')->middleware('check.session');
