@@ -296,12 +296,8 @@ class PayController extends Controller
     /**
      * 删除订单
      */
-    public function deleteOrder(Request $request){
-        $uid=$request->session()->get('uid');
-        $where=[
-            'uid'=>$uid
-        ];
-        $orderInfo=OrderModel::where($where)->get();
+    public function deleteOrder(){
+        $orderInfo=OrderModel::all();
         if(empty($orderInfo)){
             exit('还没有下单');
         }
