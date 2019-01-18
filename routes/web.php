@@ -64,20 +64,20 @@ Route::get('/userlogin','User\UserController@loginview');
 Route::post('/userlogin','User\UserController@userlogin');
 Route::get('/quit','User\UserController@quit');
 //购物车
-Route::get('/goods','Cart\Cart@cartGoods')->middleware('check.session');
-Route::get('/cartlist','Cart\Cart@cartlist')->middleware('check.session');
-Route::get('/create/{goods_id}','Cart\cart@create')->middleware('check.session');
-Route::post('/doadd','Cart\cart@doAdd')->middleware('check.session');
-Route::get('/cartdel/{id}','Cart\cart@del')->middleware('check.session');
+Route::get('/goods','Cart\Cart@cartGoods');
+Route::get('/cartlist','Cart\Cart@cartlist');
+Route::get('/create/{goods_id}','Cart\cart@create');
+Route::post('/doadd','Cart\cart@doAdd');
+Route::get('/cartdel/{id}','Cart\cart@del');
 //订单
-Route::get('/orderlist','Order\order@orderList')->middleware('check.session');
-Route::get('/addorder','Order\order@reorder')->middleware('check.session');
-Route::get('/orderdetail/{order_num}','Order\order@orderDetail')->middleware('check.session');
-Route::get('/orderdel/{order_num}','Order\order@orderDel')->middleware('check.session');
-Route::get('/recoveorder/{order_num}','Order\order@recoveOrder')->middleware('check.session');
+Route::get('/orderlist','Order\order@orderList');
+Route::get('/addorder','Order\order@reorder');
+Route::get('/orderdetail/{order_num}','Order\order@orderDetail');
+Route::get('/orderdel/{order_num}','Order\order@orderDel');
+Route::get('/recoveorder/{order_num}','Order\order@recoveOrder');
 
 /** 付款 */
-Route::get('/pay/{order_num}','Pay\pay@orderPay')->middleware('check.session');
+Route::get('/pay/{order_num}','Pay\pay@orderPay');
 
 
 //中间件测试

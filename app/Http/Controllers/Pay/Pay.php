@@ -6,9 +6,14 @@ use App\Model\OrderModel;
 use App\Model\UserModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class Pay extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /** 调用支付包接口 */
     public function orderPay(Request $request,$order_num){
 
@@ -23,7 +28,7 @@ class Pay extends Controller
         $orderInfo=OrderModel::where($where)->first();
         $amount=$orderInfo->order_amount;
         $userWhere=[
-            'uid'=>$request->session()->get('uid'),
+            'id'=>Auth::id(),
         ];
         $userInfo=UserModel::where($userWhere)->first();
         $userDate=[

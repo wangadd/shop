@@ -8,24 +8,30 @@ use App\Model\GoodsModel;
 use App\Model\OrderModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class Order extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
    /** 订单展示 */
    public function orderList(Request $request){
-       $uid=$request->session()->get('uid');
+       $uid=Auth::id();
        $where=[
            'uid'=>$uid,
        ];
        $data=OrderModel::where($where)->orderBy('add_time','desc')->take(3)->get();
        $info=[
+           'uid'=>$uid,
            'data'=>$data
        ];
         return view('order.list',$info);
    }
    /** 生成订单 */
    public function reorder(Request $request){
-       $uid=$request->session()->get('uid');
+       $uid=Auth::id();
        if(empty($uid)){
            exit('请选择要购买的商品');
        }
@@ -67,20 +73,20 @@ class Order extends Controller
                'goods_name'=>$v->goods_name,
                'goods_price'=>$v->goods_price,
                'buy_number'=>$v->buy_number,
-               'uid'=>$request->session()->get('uid')
+               'uid'=>Auth::id()
            ];
            $result=DetailModel::insert($arr);
        }
        $data=[
            'order_num'      => $order_sn,
-           'uid'           => session()->get('uid'),
+           'uid'           =>Auth::id(),
            'add_time'      => time(),
            'order_amount'  => $order_amount
        ];
        $oid = OrderModel::insertGetId($data);
        if($oid){
            //清空购物车
-           CartModel::where(['uid'=>session()->get('uid')])->delete();
+           CartModel::where(['uid'=>Auth::id()])->delete();
            echo "下单成功";
            header("refresh:2;url=/orderlist");
        }else{
@@ -91,7 +97,7 @@ class Order extends Controller
    public function orderDetail(Request $request,$order_num){
         $where=[
             'order_num'=>$order_num,
-            'uid'=>$request->session()->get('uid')
+            'uid'=>Auth::id()
         ];
         $orderInfo=OrderModel::where($where)->first();
         $info=DetailModel::where($where)->get();
@@ -107,7 +113,7 @@ class Order extends Controller
         if(empty($order_num)){
             exit('请选择要取消的订单');
         }
-        $uid=$request->session()->get('uid');
+        $uid=Auth::id();
         //把订单状态改为取消
         $orderwhere=[
             'order_num'=>$order_num,
@@ -144,7 +150,7 @@ class Order extends Controller
    /** 恢复订单 */
    public function recoveOrder(Request $request,$order_num){
        //修改订单状态
-       $uid=$request->session()->get('uid');
+       $uid=Auth::id();
        $orderwhere=[
            'order_num'=>$order_num,
            'uid'=>$uid

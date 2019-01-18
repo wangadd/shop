@@ -8,26 +8,33 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\GoodsModel;
 use App\Model\CartModel;
+use Illuminate\Support\Facades\Auth;
 use phpDocumentor\Reflection\DocBlock\Tags\Param;
 
 class Cart extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /** 商品列表展示 */
     public function cartGoods(){
         $data=GoodsModel::all();
         $info=[
+            'uid'=>Auth::id(),
             'data'=>$data
         ];
         return view('cart.goodslist',$info);
     }
     /** 购物车列表展示 */
     public function cartlist(Request $request){
-        $uid=$request->session()->get('uid');
+        $uid=Auth::id();
         $where=[
             'uid'=>$uid
         ];
         $info=CartModel::where($where)->get();
         $data=[
+            'uid'=>$uid,
             'info'=>$info
         ];
         return view('cart.list',$data);
@@ -47,7 +54,7 @@ class Cart extends Controller
     public  function doAdd(Request $request){
         $goods_id=$request->input('goods_id');
         $buy_num=$request->input('goods_num');
-        $uid=$request->session()->get('uid');
+        $uid=Auth::id();
         $token=$request->session()->get('u_token');
 
         $where=[
@@ -92,7 +99,7 @@ class Cart extends Controller
         if(empty($id)){
             exit('此商品不在购物车中');
         }
-        $uid=$request->session()->get('uid');
+        $uid=Auth::id();
         $where=[
             'id'=>$id,
             'uid'=>$uid

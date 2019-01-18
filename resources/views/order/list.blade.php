@@ -1,7 +1,7 @@
 @extends('layouts.bootstrap')
 
 @section('content')
-    <h1>UID: <font color="red">{{$_COOKIE['uid']}}</font>欢迎回来</h1>
+    <h1>UID: <font color="red">{{$uid}}</font>欢迎回来</h1>
     <form>
         @foreach($data as $v)
         <table border="1" class="table table-bordered">
