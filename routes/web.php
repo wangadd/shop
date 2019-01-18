@@ -83,3 +83,7 @@ Route::get('/pay/{order_num}','Pay\pay@orderPay')->middleware('check.session');
 //中间件测试
 Route::get('/test/mid1','Test\TestController@mid1')->middleware('check.uid');        //中间件测试
 Route::get('/test/check_cookie','Test\TestController@checkCookie')->middleware('check.cookie');        //中间件测试
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
