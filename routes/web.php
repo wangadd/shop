@@ -64,7 +64,6 @@ Route::get('/userlogin','User\UserController@loginview');
 Route::post('/userlogin','User\UserController@userlogin');
 Route::get('/quit','User\UserController@quit');
 //购物车
-<<<<<<< HEAD
 Route::get('/goods','Cart\Cart@cartGoods');
 Route::get('/cartlist','Cart\Cart@cartlist');
 Route::get('/create/{goods_id}','Cart\cart@create');
@@ -79,8 +78,6 @@ Route::get('/recoveorder/{order_num}','Order\order@recoveOrder');
 
 /** 付款 */
 Route::get('/pay/{order_num}','Pay\pay@orderPay');
-
-=======
 Route::get('/goods','Cart\Cart@cartGoods')->middleware('check.session');
 Route::get('/cartlist','Cart\Cart@cartlist')->middleware('check.session');
 Route::get('/create/{goods_id}','Cart\Cart@create')->middleware('check.session');
@@ -97,17 +94,12 @@ Route::get('/recoveorder/{order_num}','Order\Order@recoveOrder')->middleware('ch
 Route::get('/pay/test/{order_num}','Pay\PayController@test');         //测试
 Route::post('/pay/alipay/notify_url','Pay\PayController@notify_url');       //支付宝支付 异步通知回调
 Route::get('/pay/alipay/return_url','Pay\PayController@return_url');        //支付宝支付 同步通知回调
->>>>>>> alipay
 
 //中间件测试
 Route::get('/test/mid1','Test\TestController@mid1')->middleware('check.uid');        //中间件测试
 Route::get('/test/check_cookie','Test\TestController@checkCookie')->middleware('check.cookie');        //中间件测试
-
-<<<<<<< HEAD
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-=======
 //计划任务
 Route::get('/pay/delete','Pay\PayController@deleteOrder');
->>>>>>> alipay

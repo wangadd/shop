@@ -22,7 +22,10 @@ class PayController extends Controller
     public $rsaPrivateKeyFilePath = './key/priv.key';
     public $aliPubKey = './key/ali_pub.key';
 
-
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * 请求订单服务 处理订单逻辑
      *
