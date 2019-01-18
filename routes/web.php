@@ -66,20 +66,6 @@ Route::get('/quit','User\UserController@quit');
 //购物车
 Route::get('/goods','Cart\Cart@cartGoods');
 Route::get('/cartlist','Cart\Cart@cartlist');
-Route::get('/create/{goods_id}','Cart\cart@create');
-Route::post('/doadd','Cart\cart@doAdd');
-Route::get('/cartdel/{id}','Cart\cart@del');
-//订单
-Route::get('/orderlist','Order\order@orderList');
-Route::get('/addorder','Order\order@reorder');
-Route::get('/orderdetail/{order_num}','Order\order@orderDetail');
-Route::get('/orderdel/{order_num}','Order\order@orderDel');
-Route::get('/recoveorder/{order_num}','Order\order@recoveOrder');
-
-/** 付款 */
-Route::get('/pay/{order_num}','Pay\pay@orderPay');
-Route::get('/goods','Cart\Cart@cartGoods');
-Route::get('/cartlist','Cart\Cart@cartlist');
 Route::get('/create/{goods_id}','Cart\Cart@create');
 Route::post('/doadd','Cart\Cart@doAdd');
 Route::get('/cartdel/{id}','Cart\Cart@del');
@@ -98,6 +84,7 @@ Route::get('/pay/alipay/return_url','Pay\PayController@return_url');        //�
 //中间件测试
 Route::get('/test/mid1','Test\TestController@mid1')->middleware('check.uid');        //中间件测试
 Route::get('/test/check_cookie','Test\TestController@checkCookie')->middleware('check.cookie');        //中间件测试
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
