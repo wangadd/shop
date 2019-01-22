@@ -21,6 +21,8 @@ class GoodsController extends Controller
             exit('请上传正确格式的文件');
         }
         $res=$pdf->storeAs(date('Ymd'),str_random('5').'.pdf');
-        var_dump($res);
+        if($res){
+            echo "上传成功";
+        }
    }
 }
