@@ -19,10 +19,11 @@ class Cart extends Controller
     }
     /** 商品列表展示 */
     public function cartGoods(){
-        $data=GoodsModel::all();
+        $uid=Auth::id();
+        $list=GoodsModel::paginate(5);
         $info=[
-            'uid'=>Auth::id(),
-            'data'=>$data
+            'uid'=>$uid,
+            'list'=>$list
         ];
         return view('cart.goodslist',$info);
     }
