@@ -90,6 +90,7 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 //计划任务
 Route::get('/pay/delete','Pay\PayController@deleteOrder');
+Route::get('/test','Test\Test@test');
 //文件上传
 Route::get('/goods/upload','Goods\GoodsController@upload');
 Route::post('/goods/upload/do','Goods\GoodsController@uploadDo');
