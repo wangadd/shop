@@ -15,7 +15,7 @@ class Cart extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+//        $this->middleware('auth');
     }
     /** 商品列表展示 */
     public function cartGoods(){

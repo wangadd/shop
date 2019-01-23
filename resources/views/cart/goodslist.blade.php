@@ -1,7 +1,7 @@
 @extends('layouts.bootstrap')
 
 @section('content')
-    <h1>UID: <font color="red">{{$uid}}</font>欢迎回来</h1>
+    <h1>欢迎回来</h1>
     <table border="1" style="width: 700px;height:300px;">
         <tr align="center">
             <td>商品ID</td>

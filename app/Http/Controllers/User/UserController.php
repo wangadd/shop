@@ -6,34 +6,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\Model\UserModel;
+use Illuminate\Support\Facades\Redis;
 
 class UserController extends Controller
 {
-    //
 
-	public function user($uid)
-	{
-		echo $uid;
-	}
-
-	public function test()
-    {
-        echo '<pre>';print_r($_GET);echo '</pre>';
-    }
-
-    //用户随机注册
-	public function add()
-	{
-		$data = [
-			'name'      => str_random(5),
-			'age'       => mt_rand(20,99),
-			'email'     => str_random(6) . '@gmail.com',
-			'reg_time'  => time()
-		];
-
-		$id = UserModel::insertGetId($data);
-		var_dump($id);
-	}
 
     /**
      * 用户列表展示
@@ -58,22 +35,6 @@ class UserController extends Controller
 
 	        return view('user.userlist',$data);
     }
-    public function viewTest1()
-    {
-        $data = [];
-        return view('user.index',$data);
-    }
-    public function viewTest2()
-    {
-        $list = UserModel::all()->toArray();
-        
-        $data = [
-            'title'     => 'XXXX',
-            'list'      => $list
-        ];
-
-        return view('user.child',$data);
-    }
     /**
      * 用户注册
      * 2019年1月3日14:26:56
@@ -91,6 +52,7 @@ class UserController extends Controller
         if(empty($request->input('u_name'))){
             exit('用户名不能为空');
         }else{
+            //验证唯一性
             $userWhere=[
                 'name'=>$request->input('u_name')
             ];
@@ -133,34 +95,42 @@ class UserController extends Controller
     public function userlogin(Request $request){
         $u_name=$request->input('u_name');
         $pwd=$request->input('u_pwd');
-        $where=[
-          'name'=>$u_name,
-        ];
-        $data=UserModel::where($where)->first();
-        $uid=$data->uid;
-        if(empty($data)){
-            echo '账号或密码有误';exit;
+        $key=Redis::put('key');
+        $arr=unserialize($key);
+        if(!empty($key)){
+            echo "登录成功";
         }else{
-            if( password_verify($pwd,$data->pwd) ){
-                echo "登录成功";
-                $token=substr(time().rand(0,99999),10,10);
-                setcookie('uid',$uid,time()+60*60*24,'/','',false,true);
-                setcookie('token',$token,time()+86400,'/','',false,true);
-                $request->session()->put('u_token',$token);
-                $request->session()->put('uid',$uid);
-               header("Refresh:3;url=/goods");
+            //从数据库中查询
+            $where=[
+                'name'=>$u_name,
+            ];
+            $data=UserModel::where($where)->first();
+            $uid=$data->uid;
+            if(empty($data)){
+                echo '账号或密码有误';exit;
+            }else{
+                if( password_verify($pwd,$data->pwd) ){
+                    echo "登录成功";
+                    $token=substr(time().rand(0,99999),10,10);
+                    setcookie('uid',$uid,time()+60*60*24,'/','',false,true);
+                    setcookie('token',$token,time()+86400,'/','',false,true);
+                    $request->session()->put('u_token',$token);
+                    $request->session()->put('uid',$uid);
+                    $str=serialize($data);
+                    Redis::set('key',$str,60);
+                    header("Refresh:3;url=/goods");
 
-           }else{
-               die("密码不正确");
-           }
+                }else{
+                    die("密码不正确");
+                }
 
+            }
         }
     }
     /** 退出 */
     public function quit(){
         setcookie('uid','',time()-1);
         header("refresh:0;url=/userlogin");
-
     }
 }
 
