@@ -63,6 +63,9 @@ Route::get('/userlist','User\UserController@usershow');
 Route::get('/userlogin','User\UserController@loginview');
 Route::post('/userlogin','User\UserController@userlogin');
 Route::get('/quit','User\UserController@quit');
+//修改密码
+Route::get('/useruppwd','User\UserController@updatePwd');
+Route::post('/useruppwd','User\UserController@doUpdate');
 //购物车
 Route::get('/goods','Cart\Cart@cartGoods');
 Route::get('/cartlist','Cart\Cart@cartlist');

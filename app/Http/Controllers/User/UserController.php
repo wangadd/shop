@@ -88,17 +88,22 @@ class UserController extends Controller
             echo '注册失败';
         }
     }
-    /**用户登录*/
+    /**登录视图*/
     public function loginview(){
         return view('user.login');
     }
+
+    /**
+     * @param Request $request执行登录
+     */
     public function userlogin(Request $request){
         $u_name=$request->input('u_name');
         $pwd=$request->input('u_pwd');
         if(Cache::has('key')){
             $key=Cache::get('key');
             $arr=unserialize($key);
-            print_r($arr);
+                echo "缓存登录";
+
         }else{
 //          从数据库中查询
             $where=[
@@ -110,14 +115,14 @@ class UserController extends Controller
                 echo '账号或密码有误';exit;
             }else{
                 if( password_verify($pwd,$data->pwd) ){
-                    echo "登录成功";
+                    echo "数据库登录";
                     $token=substr(time().rand(0,99999),10,10);
                     setcookie('uid',$uid,time()+60*60*24,'/','',false,true);
                     setcookie('token',$token,time()+86400,'/','',false,true);
                     $request->session()->put('u_token',$token);
                     $request->session()->put('uid',$uid);
                     $str=serialize($data);
-                    Cache::set('key',$str,60);
+                    Cache::put('key',$str,1);
                     header("Refresh:3;url=/goods");
 
                 }else{
@@ -125,6 +130,38 @@ class UserController extends Controller
                 }
 
             }
+        }
+    }
+    /**
+     *修改密码
+     */
+    public function updatePwd(){
+        return view('user.uppwd');
+    }
+    /**
+     * 执行修改
+     */
+    public function doUpdate(Request $request){
+        $u_name=$request->input('u_name');
+        $pwd=$request->input('u_pwd');
+        $pwd=password_hash($pwd,PASSWORD_BCRYPT);
+        $where=[
+            'name'=>$u_name
+        ];
+        $data=[
+            'pwd'=>$pwd
+        ];
+        $res=UserModel::where($where)->update($data);
+        if($res){
+            echo "修改成功";
+            $info=[
+                'name'=>$u_name,
+                'pwd'=>$pwd
+            ];
+            $str=serialize($info);
+            Cache::put('key',$str,1);
+        }else{
+            echo "修改失败";
         }
     }
     /** 退出 */
