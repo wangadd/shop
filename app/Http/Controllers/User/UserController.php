@@ -96,7 +96,7 @@ class UserController extends Controller
         $u_name=$request->input('u_name');
         $pwd=$request->input('u_pwd');
         if(Cache::has('key')){
-            $key=Cache::put('key');
+            $key=Cache::get('key');
             $arr=unserialize($key);
             print_r($arr);
         }else{
