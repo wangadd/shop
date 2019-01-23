@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\Model\UserModel;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
@@ -95,12 +95,12 @@ class UserController extends Controller
     public function userlogin(Request $request){
         $u_name=$request->input('u_name');
         $pwd=$request->input('u_pwd');
-        $key=Redis::put('key');
-        $arr=unserialize($key);
-        if(!empty($key)){
-            echo "登录成功";
+        if(Cache::has('key')){
+            $key=Redis::put('key');
+            $arr=unserialize($key);
+            print_r($arr);
         }else{
-            //从数据库中查询
+//          从数据库中查询
             $where=[
                 'name'=>$u_name,
             ];
@@ -117,7 +117,7 @@ class UserController extends Controller
                     $request->session()->put('u_token',$token);
                     $request->session()->put('uid',$uid);
                     $str=serialize($data);
-                    Redis::set('key',$str,60);
+                    Cache::set('key',$str,60);
                     header("Refresh:3;url=/goods");
 
                 }else{
