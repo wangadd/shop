@@ -88,4 +88,3 @@ class WxController extends Controller
         return $data;
     }
 }
-
