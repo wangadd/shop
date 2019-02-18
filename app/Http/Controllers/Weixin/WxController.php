@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Weixin;
 
+use App\Model\WxuserModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
+use Illuminate\Support\Facades\Redis;
 
 class WxController extends Controller
 {
@@ -22,13 +25,36 @@ class WxController extends Controller
     public function wxEvent()
     {
         $data = file_get_contents("php://input");
-        var_dump($data);die;
         //解析XML
         $xml = simplexml_load_string($data);        //将 xml字符串 转换成对象
-        var_dump($xml);die;
         $event = $xml->Event;                       //事件类型
+
+        if($event=='subscribe'){
+            $openid = $xml->FromUserName;               //用户openid
+            $sub_time = $xml->CreateTime;               //扫码关注时间
+            //获取用户信息
+            $user_info = $this->getUserInfo($openid);
+            
+            //保存用户信息
+            $u = WxuserModel::where(['openid'=>$openid])->first();
+            if($u){       //用户不存在
+                echo '用户已存在';
+            }else{
+                $user_data = [
+                    'openid'            => $openid,
+                    'add_time'          => time(),
+                    'nickname'          => $user_info['nickname'],
+                    'sex'               => $user_info['sex'],
+                    'headimgurl'        => $user_info['headimgurl'],
+                    'subscribe_time'    => $sub_time,
+                ];
+
+                $id = WxuserModel::insertGetId($user_data);      //保存用户信息
+            }
+        }
         $log_str = date('Y-m-d H:i:s') . "\n" . $data . "\n<<<<<<<";
         file_put_contents('logs/wx_event.log',$log_str,FILE_APPEND);
+        echo "ok";
     }
     /**
      * 获取微信AccessToken
@@ -57,12 +83,9 @@ class WxController extends Controller
      */
     public function getUserInfo($openid)
     {
-        $openid = 'oLreB1jAnJFzV_8AGWUZlfuaoQto';
         $access_token = $this->getWXAccessToken();
         $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
-
         $data = json_decode(file_get_contents($url),true);
-        echo '<pre>';print_r($data);echo '</pre>';
         return $data;
     }
 }
