@@ -60,7 +60,7 @@ class WxController extends Controller
             if($u){
                 echo "ok";
             }else{
-                echo "fail";
+                echo "no";
             }
         }
         $log_str = date('Y-m-d H:i:s') . "\n" . $data . "\n<<<<<<<";
