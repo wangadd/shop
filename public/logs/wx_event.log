@@ -6,4 +6,12 @@
 <Event><![CDATA[subscribe]]></Event>
 <EventKey><![CDATA[]]></EventKey>
 </xml>
+<<<<<<<2019-02-18 11:29:11
+<xml><ToUserName><![CDATA[gh_d6117a43fe1c]]></ToUserName>
+<FromUserName><![CDATA[op1dY6Hm05dPaI_co25uRmfYG6cU]]></FromUserName>
+<CreateTime>1550454838</CreateTime>
+<MsgType><![CDATA[event]]></MsgType>
+<Event><![CDATA[subscribe]]></Event>
+<EventKey><![CDATA[]]></EventKey>
+</xml>
 <<<<<<<
