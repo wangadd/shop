@@ -22,13 +22,14 @@ class WxController extends Controller
     public function wxEvent()
     {
         $data = file_get_contents("php://input");
+        var_dump($data);die;
+        //解析XML
+        $xml = simplexml_load_string($data);        //将 xml字符串 转换成对象
+        var_dump($xml);die;
+        $event = $xml->Event;                       //事件类型
         $log_str = date('Y-m-d H:i:s') . "\n" . $data . "\n<<<<<<<";
         file_put_contents('logs/wx_event.log',$log_str,FILE_APPEND);
     }
-    public function test(){
-        echo "aa";
-    }
-
     /**
      * 获取微信AccessToken
      */
@@ -62,6 +63,7 @@ class WxController extends Controller
 
         $data = json_decode(file_get_contents($url),true);
         echo '<pre>';print_r($data);echo '</pre>';
+        return $data;
     }
 }
 
