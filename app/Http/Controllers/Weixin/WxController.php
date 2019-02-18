@@ -49,11 +49,15 @@ class WxController extends Controller
                     'subscribe_time'    => $sub_time,
                 ];
                 $id = WxuserModel::insertGetId($user_data);      //保存用户信息
+                if($id){
+                    echo "success";
+                }else{
+                    echo "fail";
+                }
             }
         }
         $log_str = date('Y-m-d H:i:s') . "\n" . $data . "\n<<<<<<<";
         file_put_contents('logs/wx_event.log',$log_str,FILE_APPEND);
-        echo "ok";
     }
     /**
      * 获取微信AccessToken
