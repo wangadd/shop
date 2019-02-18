@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Redis;
 
 class WxController extends Controller
 {
-    protected $redis_weixin_access_token = 'str:weixin_access_token';
+    protected $redis_weixin_access_token = 'str:weixin_access_token1';
     /**
      * 首次接入
      */
@@ -34,7 +34,6 @@ class WxController extends Controller
             $sub_time = $xml->CreateTime;               //扫码关注时间
             //获取用户信息
             $user_info = $this->getUserInfo($openid);
-
             //保存用户信息
             $u = WxuserModel::where(['openid'=>$openid])->first();
             if($u){       //用户不存在
@@ -54,6 +53,14 @@ class WxController extends Controller
                 }else{
                     echo "fail";
                 }
+            }
+        }else{
+            $openid = $xml->FromUserName;
+            $u = WxuserModel::where(['openid'=>$openid])->delete();
+            if($u){
+                echo "ok";
+            }else{
+                echo "fail";
             }
         }
         $log_str = date('Y-m-d H:i:s') . "\n" . $data . "\n<<<<<<<";
