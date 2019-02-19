@@ -54,7 +54,7 @@ class WxController extends Controller
                 }
             }
         }elseif ($event=='CLICK'){
-            if($xml->EventKey=='kefu1'){
+            if($xml->EventKey=='V1001_TODAY_MUSIC'){
                 $this->kefu01($openid,$xml->ToUserName);
             }
         }else{
@@ -133,7 +133,7 @@ class WxController extends Controller
                 [
                     "type"=>"click",
                     "name"=>"客服test1",
-                    "key"=>"kefu1"
+                    "key"=>"V1001_TODAY_MUSIC"
                 ],
                 [
                     "name"=>"菜单",
