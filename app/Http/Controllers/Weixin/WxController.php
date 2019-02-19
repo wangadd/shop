@@ -109,14 +109,14 @@ class WxController extends Controller
             "button" =>[
                [
                    "type" =>"view",
-                   "name"=>"lening",
+                   "name"=>"乐柠",
                    "url"=>"http://www.baidu.com"
                ]
            ],
         ];
 
         $r=$client->request('POST',$url,[
-            'body'=>json_encode($data)
+            'body'=>json_encode($data,JSON_UNESCAPED_UNICODE)
         ]);
 
         //解析微信接口返回信息
@@ -124,7 +124,7 @@ class WxController extends Controller
         if($request_arr['errcode']==0){
             echo "创建菜单成功";
         }else{
-            echo "创建菜单失败";
+            echo "创建菜单失败,错误代码".$request_arr['errcode'];
         }
 
     }
