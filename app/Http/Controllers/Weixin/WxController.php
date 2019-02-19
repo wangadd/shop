@@ -96,14 +96,13 @@ class WxController extends Controller
      */
     public function kefu02($openid,$from)
     {
-        $url="https://588ku.com/wordart/10375945.html";
         // 文本消息
         $xml_response = '<xml>
                         <ToUserName><![CDATA['.$openid.']]></ToUserName>
                         <FromUserName><![CDATA['.$from.']]></FromUserName>
                         <CreateTime>'.time().'</CreateTime>
-                        <MsgType>< ![CDATA[image] ]></MsgType>
-                        <Image><MediaId>< ![CDATA['.$url.'] ]></MediaId></Image>
+                        <MsgType><![CDATA[text]]></MsgType>
+                        <Content><![CDATA['. '开什么玩笑还想要图'.']]></Content>
                         </xml>';
         echo $xml_response;
     }
