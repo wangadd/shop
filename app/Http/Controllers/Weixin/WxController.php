@@ -132,7 +132,7 @@ class WxController extends Controller
             "button"=>[
                 [
                     "type"=>"click",
-                    "name"=>"客服test1",
+                    "name"=>"点此自动回复",
                     "key"=>"V1001_TODAY_MUSIC"
                 ],
                 [
