@@ -103,5 +103,7 @@ Route::post('/goods/upload/do','Goods\GoodsController@uploadDo');
 //微信测试
 Route::get('/weixin/valid','Weixin\WxController@valid');
 Route::post('/weixin/valid','Weixin\WxController@wxEvent');
+Route::get('/weixin/test','Weixin\WxController@test');
+Route::get('/weixin/create_menu','Weixin\WxController@createMenu');
 
 
