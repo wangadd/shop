@@ -63,7 +63,7 @@ class WxController extends Controller
                                 <FromUserName><![CDATA['.$xml->ToUserName.']]></FromUserName>
                                 <CreateTime>'.time().'</CreateTime>
                                 <MsgType><![CDATA[text]]></MsgType>
-                                <Content><![CDATA['. $wx_image_path . date('Y-m-d H:i:s') .']]></Content>
+                                <Content><![CDATA['. $xml->PicUrl . date('Y-m-d H:i:s') .']]></Content>
                                 </xml>';
                 echo $xml_response;
 
