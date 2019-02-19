@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redis;
 use GuzzleHttp;
+use Illuminate\Support\Facades\Storage;
 
 class WxController extends Controller
 {
@@ -41,11 +42,36 @@ class WxController extends Controller
                         <Content><![CDATA['.$msg .']]></Content>
                         </xml>';
                 echo $xml_response;
-                exit();
+            }elseif ($xml->MsgType=='image'){
+                $MediaId=$xml->MediaId;
+                //获取微信access_token
+                $access_token=$this->getWXAccessToken();
+                $url='https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$access_token.'&media_id='.$MediaId;
+                //保存图片
+                $client = new GuzzleHttp\Client();
+                $response = $client->get($url);
+                //var_dump($response);die;
+                //获取文件名
+                $file_info = $response->getHeader('Content-disposition');
+                //var_dump($file_info);die;
+                $file_name = substr(rtrim($file_info[0],'"'),-20);
+                $wx_image_path = 'wx/images/'.$file_name;
+                //保存图片
+                $r = Storage::disk('local')->put($wx_image_path,$response->getBody());
+                $xml_response = '<xml>
+                                <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                                <FromUserName><![CDATA['.$xml->ToUserName.']]></FromUserName>
+                                <CreateTime>'.time().'</CreateTime>
+                                <MsgType><![CDATA[text]]></MsgType>
+                                <Content><![CDATA['. str_random(10) . ' >>> ' . date('Y-m-d H:i:s') .']]></Content>
+                                </xml>';
+                echo $xml_response;
+
             }
+            exit();
         }
 
-        
+
         if($event=='subscribe'){
 
             $sub_time = $xml->CreateTime;               //扫码关注时间
