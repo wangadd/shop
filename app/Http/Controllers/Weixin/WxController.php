@@ -27,9 +27,9 @@ class WxController extends Controller
         //解析XML
         $xml = simplexml_load_string($data);        //将 xml字符串 转换成对象
         $event = $xml->Event;                       //事件类型
-
+        $openid = $xml->FromUserName;               //用户openid
         if($event=='subscribe'){
-            $openid = $xml->FromUserName;               //用户openid
+
             $sub_time = $xml->CreateTime;               //扫码关注时间
             //获取用户信息
             $user_info = $this->getUserInfo($openid);
@@ -53,6 +53,10 @@ class WxController extends Controller
                     echo "fail";
                 }
             }
+        }elseif ($event=='click'){
+            if($xml->EventKey=='kefu1'){
+                $this->kefu01($openid,$xml->ToUserName);
+            }
         }else{
             $openid = $xml->FromUserName;
             $u = WxuserModel::where(['openid'=>$openid])->delete();
@@ -65,6 +69,25 @@ class WxController extends Controller
         $log_str = date('Y-m-d H:i:s') . "\n" . $data . "\n<<<<<<<";
         file_put_contents('logs/wx_event.log',$log_str,FILE_APPEND);
     }
+
+    /**
+     * 客服处理
+     * @param $openid   用户openid
+     * @param $from     开发者公众号id 非 APPID
+     */
+    public function kefu01($openid,$from)
+    {
+        // 文本消息
+        $xml_response = '<xml>
+                        <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                        <FromUserName><![CDATA['.$from.']]></FromUserName>
+                        <CreateTime>'.time().'</CreateTime>
+                        <MsgType><![CDATA[text]]></MsgType>
+                        <Content><![CDATA['. '欢迎访问, 现在时间'. date('Y-m-d H:i:s') .']]></Content>
+                        </xml>';
+        echo $xml_response;
+    }
+
     /**
      * 获取微信AccessToken
      */
@@ -106,13 +129,38 @@ class WxController extends Controller
         //请求微信接口
         $client = new GuzzleHttp\Client(['base_uri' => $url]);
         $data=[
-            "button" =>[
-               [
-                   "type" =>"view",
-                   "name"=>"乐柠",
-                   "url"=>"http://www.baidu.com"
-               ]
-           ],
+            "button"=>[
+                [
+                    "type"=>"click",
+                    "name"=>"客服test1",
+                    "key"=>"kefu1"
+                ],
+                [
+                    "name"=>"菜单",
+                    "sub_button"=>[
+                        [
+                            "type"=>"view",
+                            "name"=>"搜索",
+                            "url"=>"http://www.soso.com/"
+                        ],
+                        [
+                            "type"=> "pic_photo_or_album",
+                            "name"=> "拍照或者相册发图",
+                            "key"=> "rselfmenu_1_1",
+                        ],
+                    ],
+                ],
+                [
+                    "name"=> "发图",
+                    "sub_button"=>[
+                        [
+                            "type"=> "pic_sysphoto",
+                            "name"=> "系统拍照发图",
+                            "key"=>"rselfmenu_1_0",
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $r=$client->request('POST',$url,[
