@@ -56,6 +56,8 @@ class WxController extends Controller
         }elseif ($event=='CLICK'){
             if($xml->EventKey=='V1001_TODAY_MUSIC'){
                 $this->kefu01($openid,$xml->ToUserName);
+            }elseif ($xml->EventKey=='test'){
+                $this->kefu02($openid,$xml->ToUserName);
             }
         }else{
             $openid = $xml->FromUserName;
@@ -84,6 +86,24 @@ class WxController extends Controller
                         <CreateTime>'.time().'</CreateTime>
                         <MsgType><![CDATA[text]]></MsgType>
                         <Content><![CDATA['. '欢迎访问, 现在时间'. date('Y-m-d H:i:s') .']]></Content>
+                        </xml>';
+        echo $xml_response;
+    }
+    /**
+     * 客服处理2
+     * @param $openid   用户openid
+     * @param $from     开发者公众号id 非 APPID
+     */
+    public function kefu02($openid,$from)
+    {
+        $url="https://588ku.com/wordart/10375945.html";
+        // 文本消息
+        $xml_response = '<xml>
+                        <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                        <FromUserName><![CDATA['.$from.']]></FromUserName>
+                        <CreateTime>'.time().'</CreateTime>
+                        <MsgType>< ![CDATA[image] ]></MsgType>
+                        <Image><MediaId>< ![CDATA['.$url.'] ]></MediaId></Image>
                         </xml>';
         echo $xml_response;
     }
@@ -136,19 +156,9 @@ class WxController extends Controller
                     "key"=>"V1001_TODAY_MUSIC"
                 ],
                 [
-                    "name"=>"菜单",
-                    "sub_button"=>[
-                        [
-                            "type"=>"view",
-                            "name"=>"搜索",
-                            "url"=>"http://www.soso.com/"
-                        ],
-                        [
-                            "type"=> "pic_photo_or_album",
-                            "name"=> "拍照或者相册发图",
-                            "key"=> "rselfmenu_1_1",
-                        ],
-                    ],
+                    "type"=>"click",
+                    "name"=>"点此发图",
+                    "key"=>"test"
                 ],
                 [
                     "name"=> "发图",
@@ -157,6 +167,11 @@ class WxController extends Controller
                             "type"=> "pic_sysphoto",
                             "name"=> "系统拍照发图",
                             "key"=>"rselfmenu_1_0",
+                        ],
+                        [
+                            "type"=> "pic_photo_or_album",
+                            "name"=> "拍照或者相册发图",
+                            "key"=> "rselfmenu_1_1",
                         ],
                     ],
                 ],
