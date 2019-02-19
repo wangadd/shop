@@ -67,51 +67,50 @@ class WxController extends Controller
                                 </xml>';
                 echo $xml_response;
 
+            }else{
+                if($event=='subscribe'){
+                    $sub_time = $xml->CreateTime;               //扫码关注时间
+                    //获取用户信息
+                    $user_info = $this->getUserInfo($openid);
+                    //保存用户信息
+                    $u = WxuserModel::where(['openid'=>$openid])->first();
+                    if($u){       //用户不存在
+                        echo '用户已存在';
+                    }else{
+                        $user_data = [
+                            'openid'            => $openid,
+                            'add_time'          => time(),
+                            'nickname'          => $user_info['nickname'],
+                            'sex'               => $user_info['sex'],
+                            'headimgurl'        => $user_info['headimgurl'],
+                            'subscribe_time'    => $sub_time,
+                        ];
+                        $id = WxuserModel::insertGetId($user_data);      //保存用户信息
+                        if($id){
+                            echo "success";
+                        }else{
+                            echo "fail";
+                        }
+                    }
+                }elseif ($event=='CLICK'){
+                    if($xml->EventKey=='V1001_TODAY_MUSIC'){
+                        $this->kefu01($openid,$xml->ToUserName);
+                    }elseif ($xml->EventKey=='test'){
+                        $this->kefu02($openid,$xml->ToUserName);
+                    }
+                }else{
+                    $openid = $xml->FromUserName;
+                    $u = WxuserModel::where(['openid'=>$openid])->delete();
+                    if($u){
+                        echo "ok";
+                    }else{
+                        echo "no";
+                    }
+                }
             }
             exit();
         }
 
-
-        if($event=='subscribe'){
-
-            $sub_time = $xml->CreateTime;               //扫码关注时间
-            //获取用户信息
-            $user_info = $this->getUserInfo($openid);
-            //保存用户信息
-            $u = WxuserModel::where(['openid'=>$openid])->first();
-            if($u){       //用户不存在
-                echo '用户已存在';
-            }else{
-                $user_data = [
-                    'openid'            => $openid,
-                    'add_time'          => time(),
-                    'nickname'          => $user_info['nickname'],
-                    'sex'               => $user_info['sex'],
-                    'headimgurl'        => $user_info['headimgurl'],
-                    'subscribe_time'    => $sub_time,
-                ];
-                $id = WxuserModel::insertGetId($user_data);      //保存用户信息
-                if($id){
-                    echo "success";
-                }else{
-                    echo "fail";
-                }
-            }
-        }elseif ($event=='CLICK'){
-            if($xml->EventKey=='V1001_TODAY_MUSIC'){
-                $this->kefu01($openid,$xml->ToUserName);
-            }elseif ($xml->EventKey=='test'){
-                $this->kefu02($openid,$xml->ToUserName);
-            }
-        }else{
-            $openid = $xml->FromUserName;
-            $u = WxuserModel::where(['openid'=>$openid])->delete();
-            if($u){
-                echo "ok";
-            }else{
-                echo "no";
-            }
-        }
         $log_str = date('Y-m-d H:i:s') . "\n" . $data . "\n<<<<<<<";
         file_put_contents('logs/wx_event.log',$log_str,FILE_APPEND);
     }
