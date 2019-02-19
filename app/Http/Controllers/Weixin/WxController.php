@@ -108,7 +108,6 @@ class WxController extends Controller
                     }
                 }
             }
-            exit();
         }
 
         $log_str = date('Y-m-d H:i:s') . "\n" . $data . "\n<<<<<<<";
