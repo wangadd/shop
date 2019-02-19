@@ -28,6 +28,24 @@ class WxController extends Controller
         $xml = simplexml_load_string($data);        //将 xml字符串 转换成对象
         $event = $xml->Event;                       //事件类型
         $openid = $xml->FromUserName;               //用户openid
+
+        //处理用户发送的文本消息
+        if(isset($xml->MsgType)){
+            if($xml->MsgType=='text'){
+                $msg=$xml->Content;
+                $xml_response = '<xml>
+                        <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                        <FromUserName><![CDATA['.$xml->ToUserName.']]></FromUserName>
+                        <CreateTime>'.time().'</CreateTime>
+                        <MsgType><![CDATA[text]]></MsgType>
+                        <Content><![CDATA['.$msg .']]></Content>
+                        </xml>';
+                echo $xml_response;
+                exit();
+            }
+        }
+
+        
         if($event=='subscribe'){
 
             $sub_time = $xml->CreateTime;               //扫码关注时间
