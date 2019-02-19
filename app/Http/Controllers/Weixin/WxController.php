@@ -53,7 +53,7 @@ class WxController extends Controller
                     echo "fail";
                 }
             }
-        }elseif ($event=='click'){
+        }elseif ($event=='CLICK'){
             if($xml->EventKey=='kefu1'){
                 $this->kefu01($openid,$xml->ToUserName);
             }
