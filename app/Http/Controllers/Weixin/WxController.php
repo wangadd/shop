@@ -24,7 +24,10 @@ class WxController extends Controller
      */
     public function wxEvent()
     {
+
         $data = file_get_contents("php://input");
+        $log_str = date('Y-m-d H:i:s') . "\n" . $data . "\n<<<<<<<";
+        file_put_contents('logs/wx_event.log',$log_str,FILE_APPEND);
         //解析XML
         $xml = simplexml_load_string($data);        //将 xml字符串 转换成对象
         $event = $xml->Event;                       //事件类型
@@ -53,7 +56,7 @@ class WxController extends Controller
                                 <ToUserName><![CDATA['.$openid.']]></ToUserName>
                                 <FromUserName><![CDATA['.$xml->ToUserName.']]></FromUserName>
                                 <CreateTime>'.time().'</CreateTime>
-                                <MsgType><![CDATA[text]]></MsgType>
+                                <MsgType><![CDATA[image]]></MsgType>
                                 <Content><![CDATA['. $url .']]></Content>
                                 </xml>';
                 echo $xml_response;
@@ -68,7 +71,7 @@ class WxController extends Controller
                                 <ToUserName><![CDATA['.$openid.']]></ToUserName>
                                 <FromUserName><![CDATA['.$xml->ToUserName.']]></FromUserName>
                                 <CreateTime>'.time().'</CreateTime>
-                                <MsgType><![CDATA[text]]></MsgType>
+                                <MsgType><![CDATA[voice]]></MsgType>
                                 <Content><![CDATA['. $url .']]></Content>
                                 </xml>';
                 echo $xml_response;
@@ -82,7 +85,21 @@ class WxController extends Controller
                                 <ToUserName><![CDATA['.$openid.']]></ToUserName>
                                 <FromUserName><![CDATA['.$xml->ToUserName.']]></FromUserName>
                                 <CreateTime>'.time().'</CreateTime>
-                                <MsgType><![CDATA[text]]></MsgType>
+                                <MsgType><![CDATA[video]]></MsgType>
+                                <Content><![CDATA['. $url .']]></Content>
+                                </xml>';
+                echo $xml_response;
+            }elseif($xml->MsgType=='music'){
+                $MediaId=$xml->MediaId;
+                //获取微信access_token
+                $access_token=$this->getWXAccessToken();
+                //获取文件名
+                $url=$this->baocunwenjian($access_token,$MediaId,4);
+                $xml_response = '<xml>
+                                <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                                <FromUserName><![CDATA['.$xml->ToUserName.']]></FromUserName>
+                                <CreateTime>'.time().'</CreateTime>
+                                <MsgType><![CDATA[music]]></MsgType>
                                 <Content><![CDATA['. $url .']]></Content>
                                 </xml>';
                 echo $xml_response;
@@ -129,8 +146,7 @@ class WxController extends Controller
             }
         }
 
-        $log_str = date('Y-m-d H:i:s') . "\n" . $data . "\n<<<<<<<";
-        file_put_contents('logs/wx_event.log',$log_str,FILE_APPEND);
+
     }
     /**
      * 获取文件名称
@@ -150,6 +166,8 @@ class WxController extends Controller
             $wx_image_path = 'wx/voice/'.$file_name;
         }elseif ($int==3){
             $wx_image_path = 'wx/video/'.$file_name;
+        }elseif ($int==4){
+            $wx_image_path = 'wx/music/'.$file_name;
         }
         //保存素材
         $r = Storage::disk('local')->put($wx_image_path,$response->getBody());
