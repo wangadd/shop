@@ -309,7 +309,7 @@ class WxController extends Controller
         $data=[
                 "touser"=>$arr,
                 "msgtype"=> "text",
-                "text"=>["content"=> "群发测试"]
+                "text"=>["content"=> "最后一次群发了"]
         ];
         $r=$client->request('POST',$url,[
             'body'=>json_encode($data,JSON_UNESCAPED_UNICODE)
