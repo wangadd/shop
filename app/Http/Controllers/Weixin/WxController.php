@@ -174,8 +174,6 @@ class WxController extends Controller
         return $url;
     }
 
-
-
     /**
      * 客服处理
      * @param $openid   用户openid
@@ -259,9 +257,9 @@ class WxController extends Controller
                     "key"=>"V1001_TODAY_MUSIC"
                 ],
                 [
-                    "type"=>"click",
-                    "name"=>"点此发图",
-                    "key"=>"test"
+                    "type"=>"view",
+                    "name"=>"进行群发",
+                    "url"=>"https://king.tactshan.com/weixin/groupsending"
                 ],
                 [
                     "name"=> "发图",
