@@ -105,5 +105,6 @@ Route::get('/weixin/valid','Weixin\WxController@valid');
 Route::post('/weixin/valid','Weixin\WxController@wxEvent');
 Route::get('/weixin/test','Weixin\WxController@test');
 Route::get('/weixin/create_menu','Weixin\WxController@createMenu');
+Route::get('/weixin/groupsending','Weixin\WxController@GroupSending');
 
 

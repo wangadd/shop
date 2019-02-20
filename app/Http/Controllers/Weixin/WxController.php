@@ -294,4 +294,35 @@ class WxController extends Controller
         }
 
     }
+
+    public function GroupSending(){
+        //获取微信access_token
+        $access_token=$this->getWXAccessToken();
+        $url="https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=".$access_token;
+        //请求微信接口
+        $client = new GuzzleHttp\Client(['base_uri' => $url]);
+        $userInfo=WxuserModel::all()->toArray();
+        $arr=[];
+        foreach ($userInfo as $k=>$v){
+            $arr[]=$v['openid'];
+        }
+        $data=[
+            [
+                "touser"=>$arr,
+                "msgtype"=> "text",
+                "text"=>["content"=> "群发测试"]
+            ]
+        ];
+        $r=$client->request('POST',$url,[
+            'body'=>json_encode($data,JSON_UNESCAPED_UNICODE)
+        ]);
+        //解析微信接口返回信息
+        $request_arr=json_decode($r->getBody(),true);
+        if($request_arr['errcode']==0){
+            echo "群发成功";
+        }else{
+            echo "群发失败,错误代码".$request_arr['errcode'];
+        }
+
+    }
 }
