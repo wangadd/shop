@@ -27,7 +27,8 @@ class WxController extends Controller
     {
 
         $data = file_get_contents("php://input");
-
+        $log_str = date('Y-m-d H:i:s') . "\n" . $data . "\n<<<<<<<";
+        file_put_contents('logs/wx_event.log',$log_str,FILE_APPEND);
         //解析XML
         $xml = simplexml_load_string($data);        //将 xml字符串 转换成对象
         $event = $xml->Event;                       //事件类型
@@ -44,7 +45,6 @@ class WxController extends Controller
                         <MsgType><![CDATA[text]]></MsgType>
                         <Content><![CDATA['.$msg .']]></Content>
                         </xml>';
-
                 echo $xml_response;
             }elseif ($xml->MsgType=='image'){
                 $MediaId=$xml->MediaId;
@@ -71,8 +71,6 @@ class WxController extends Controller
                 ];
                 $res=WxMediaModel::insertGetId($media_data);
                 echo $xml_response;
-
-
             }elseif ($xml->MsgType=='voice'){
                 $MediaId=$xml->MediaId;
                 //获取微信access_token
@@ -187,9 +185,6 @@ class WxController extends Controller
                 }
             }
         }
-        $log_str = date('Y-m-d H:i:s') . "\n" . $data . "\n<<<<<<<";
-        file_put_contents('logs/wx_event.log',$log_str,FILE_APPEND);
-
     }
     /**
      * 获取文件名称
