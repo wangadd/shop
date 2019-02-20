@@ -67,7 +67,8 @@ class WxController extends Controller
                     'msg_id'=>$xml->MsgId,
                     'mediaid'=>$xml->MediaId,
                     'format'=>$xml->Format,
-                    'file_name'=>$returnInfo['file_name']
+                    'file_name'=>$returnInfo['file_name'],
+                    'file_path'=>$returnInfo['wx_image_path']
                 ];
                 $res=WxMediaModel::insertGetId($media_data);
                 echo $xml_response;
@@ -91,7 +92,8 @@ class WxController extends Controller
                     'msg_id'=>$xml->MsgId,
                     'mediaid'=>$xml->MediaId,
                     'format'=>$xml->Format,
-                    'file_name'=>$returnInfo['file_name']
+                    'file_name'=>$returnInfo['file_name'],
+                    'file_path'=>$returnInfo['wx_image_path']
                 ];
                 $res=WxMediaModel::insertGetId($media_data);
                 echo $xml_response;
@@ -115,7 +117,8 @@ class WxController extends Controller
                     'msg_id'=>$xml->MsgId,
                     'mediaid'=>$xml->MediaId,
                     'format'=>$xml->Format,
-                    'file_name'=>$returnInfo['file_name']
+                    'file_name'=>$returnInfo['file_name'],
+                    'file_path'=>$returnInfo['wx_image_path']
                 ];
                 $res=WxMediaModel::insertGetId($media_data);
                 echo $xml_response;
@@ -139,7 +142,8 @@ class WxController extends Controller
                     'msg_id'=>$xml->MsgId,
                     'mediaid'=>$xml->MediaId,
                     'format'=>$xml->Format,
-                    'file_name'=>$returnInfo['file_name']
+                    'file_name'=>$returnInfo['file_name'],
+                    'file_path'=>$returnInfo['wx_image_path']
                 ];
                 $res=WxMediaModel::insertGetId($media_data);
                 echo $xml_response;
@@ -211,7 +215,8 @@ class WxController extends Controller
         $r = Storage::disk('local')->put($wx_image_path,$response->getBody());
         $data=[
             'file_name'=>$file_name,
-            'url'=>$url
+            'url'=>$url,
+            'wx_image_path'=>$wx_image_path
         ];
         return $data;
     }
