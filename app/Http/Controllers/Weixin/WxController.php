@@ -311,7 +311,6 @@ class WxController extends Controller
                 "msgtype"=> "text",
                 "text"=>["content"=> "群发测试"]
         ];
-        print_r($data);die;
         $r=$client->request('POST',$url,[
             'body'=>json_encode($data,JSON_UNESCAPED_UNICODE)
         ]);
