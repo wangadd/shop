@@ -295,7 +295,19 @@ class WxController extends Controller
 
     }
 
-    public function GroupSending(){
+    /**
+     * 获取群发内容
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function GroupSendingView(){
+        return view('weixin.groupsending');
+    }
+    /**
+     * 群发消息
+     * @throws GuzzleHttp\Exception\GuzzleException
+     */
+    public function GroupSending(Request $request){
+        $group=$request->input('group');
         //获取微信access_token
         $access_token=$this->getWXAccessToken();
         $url="https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=".$access_token;
@@ -309,7 +321,7 @@ class WxController extends Controller
         $data=[
                 "touser"=>$arr,
                 "msgtype"=> "text",
-                "text"=>["content"=> "最后一次群发了"]
+                "text"=>["content"=>$group]
         ];
         $r=$client->request('POST',$url,[
             'body'=>json_encode($data,JSON_UNESCAPED_UNICODE)
