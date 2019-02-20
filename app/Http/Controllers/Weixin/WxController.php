@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Weixin;
 
+use App\Model\WxMediaModel;
 use App\Model\WxuserModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -43,37 +44,65 @@ class WxController extends Controller
                         <MsgType><![CDATA[text]]></MsgType>
                         <Content><![CDATA['.$msg .']]></Content>
                         </xml>';
+
                 echo $xml_response;
             }elseif ($xml->MsgType=='image'){
                 $MediaId=$xml->MediaId;
                 //获取微信access_token
                 $access_token=$this->getWXAccessToken();
                 //保存文件
-                $url=$this->baocunwenjian($access_token,$MediaId,1);
+                $returnInfo=$this->baocunwenjian($access_token,$MediaId,1);
 
                 $xml_response = '<xml>
                                 <ToUserName><![CDATA['.$openid.']]></ToUserName>
                                 <FromUserName><![CDATA['.$xml->ToUserName.']]></FromUserName>
                                 <CreateTime>'.time().'</CreateTime>
                                 <MsgType><![CDATA[text]]></MsgType>
-                                <Content><![CDATA['. $url .']]></Content>
+                                <Content><![CDATA['. $returnInfo['url'] .']]></Content>
                                 </xml>';
-                echo $xml_response;
+                $media_data=[
+                    'openid'=>$openid,
+                    'add_time'=>time(),
+                    'msgtype'=>$xml->MsgType,
+                    'msg_id'=>$xml->MsgId,
+                    'mediaid'=>$xml->MediaId,
+                    'format'=>$xml->Format,
+                    'file_name'=>$returnInfo['file_name']
+                ];
+                $res=WxMediaModel::insertGetId($media_data);
+                if($res){
+                    echo $xml_response;
+                }else{
+                    echo "fail";
+                }
+
 
             }elseif ($xml->MsgType=='voice'){
                 $MediaId=$xml->MediaId;
                 //获取微信access_token
                 $access_token=$this->getWXAccessToken();
                 //获取文件名
-                $url=$this->baocunwenjian($access_token,$MediaId,2);
+                $returnInfo=$this->baocunwenjian($access_token,$MediaId,2);
                 $xml_response = '<xml>
                                 <ToUserName><![CDATA['.$openid.']]></ToUserName>
                                 <FromUserName><![CDATA['.$xml->ToUserName.']]></FromUserName>
                                 <CreateTime>'.time().'</CreateTime>
                                 <MsgType><![CDATA[text]]></MsgType>
-                                <Content><![CDATA['. $url .']]></Content>
+                                <Content><![CDATA['. $returnInfo['url'] .']]></Content>
                                 </xml>';
-                echo $xml_response;
+                $media_data=[
+                    'openid'=>$openid,
+                    'add_time'=>time(),
+                    'msgtype'=>$xml->MsgType,
+                    'msg_id'=>$xml->MsgId,
+                    'mediaid'=>$xml->MediaId,
+                    'format'=>$xml->Format,
+                    'file_name'=>$returnInfo['file_name']
+                ];
+                $res=WxMediaModel::insertGetId($media_data);
+                if($res){
+                    echo $xml_response;
+                }
             }elseif($xml->MsgType=='video'){
                 $MediaId=$xml->MediaId;
                 //获取微信access_token
@@ -85,23 +114,47 @@ class WxController extends Controller
                                 <FromUserName><![CDATA['.$xml->ToUserName.']]></FromUserName>
                                 <CreateTime>'.time().'</CreateTime>
                                 <MsgType><![CDATA[text]]></MsgType>
-                                <Content><![CDATA['. $url .']]></Content>
+                                <Content><![CDATA['.$returnInfo['url'] .']]></Content>
                                 </xml>';
-                echo $xml_response;
+                $media_data=[
+                    'openid'=>$openid,
+                    'add_time'=>time(),
+                    'msgtype'=>$xml->MsgType,
+                    'msg_id'=>$xml->MsgId,
+                    'mediaid'=>$xml->MediaId,
+                    'format'=>$xml->Format,
+                    'file_name'=>$returnInfo['file_name']
+                ];
+                $res=WxMediaModel::insertGetId($media_data);
+                if($res) {
+                    echo $xml_response;
+                }
             }elseif($xml->MsgType=='music'){
                 $MediaId=$xml->MediaId;
                 //获取微信access_token
                 $access_token=$this->getWXAccessToken();
                 //获取文件名
-                $url=$this->baocunwenjian($access_token,$MediaId,4);
+                $returnInfo=$this->baocunwenjian($access_token,$MediaId,4);
                 $xml_response = '<xml>
                                 <ToUserName><![CDATA['.$openid.']]></ToUserName>
                                 <FromUserName><![CDATA['.$xml->ToUserName.']]></FromUserName>
                                 <CreateTime>'.time().'</CreateTime>
                                 <MsgType><![CDATA[text]]></MsgType>
-                                <Content><![CDATA['. $url .']]></Content>
+                                <Content><![CDATA['. $returnInfo['url'] .']]></Content>
                                 </xml>';
-                echo $xml_response;
+                $media_data=[
+                    'openid'=>$openid,
+                    'add_time'=>time(),
+                    'msgtype'=>$xml->MsgType,
+                    'msg_id'=>$xml->MsgId,
+                    'mediaid'=>$xml->MediaId,
+                    'format'=>$xml->Format,
+                    'file_name'=>$returnInfo['file_name']
+                ];
+                $res=WxMediaModel::insertGetId($media_data);
+                if($res) {
+                    echo $xml_response;
+                }
             }else{
                 if($event=='subscribe'){
                     $sub_time = $xml->CreateTime;               //扫码关注时间
@@ -171,9 +224,12 @@ class WxController extends Controller
         }
         //保存素材
         $r = Storage::disk('local')->put($wx_image_path,$response->getBody());
-        return $url;
+        $data=[
+            'file_name'=>$file_name,
+            'url'=>$url
+        ];
+        return $data;
     }
-
     /**
      * 客服处理
      * @param $openid   用户openid
@@ -332,5 +388,10 @@ class WxController extends Controller
             echo "群发失败,错误代码".$request_arr['errcode'].",错误信息".$request_arr['errmsg'];
         }
 
+    }
+
+
+    public function test(){
+        echo __ROOT__;
     }
 }

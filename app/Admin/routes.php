@@ -13,5 +13,6 @@ Route::group([
     $router->get('/', 'HomeController@index');
     $router->get('/auth/wxuser', 'WeixinController@index');
     $router->get('/auth/goods', 'GoodsController@index');
+    $router->get('/auth/wxmedia', 'WxmediaController@index');
 
 });
