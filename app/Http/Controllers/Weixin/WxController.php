@@ -54,7 +54,7 @@ class WxController extends Controller
                                 <FromUserName><![CDATA['.$xml->ToUserName.']]></FromUserName>
                                 <CreateTime>'.time().'</CreateTime>
                                 <MsgType><![CDATA[text]]></MsgType>
-                                <Content><![CDATA['. $url . date('Y-m-d H:i:s') .']]></Content>
+                                <Content><![CDATA['. $url .']]></Content>
                                 </xml>';
                 echo $xml_response;
 
@@ -63,14 +63,13 @@ class WxController extends Controller
                 //获取微信access_token
                 $access_token=$this->getWXAccessToken();
                 //获取文件名
-                $url=$this->baocunwenjian($access_token,$MediaId,1);
-
+                $url=$this->baocunwenjian($access_token,$MediaId,2);
                 $xml_response = '<xml>
                                 <ToUserName><![CDATA['.$openid.']]></ToUserName>
                                 <FromUserName><![CDATA['.$xml->ToUserName.']]></FromUserName>
                                 <CreateTime>'.time().'</CreateTime>
                                 <MsgType><![CDATA[text]]></MsgType>
-                                <Content><![CDATA['. $url . date('Y-m-d H:i:s') .']]></Content>
+                                <Content><![CDATA['. $url .']]></Content>
                                 </xml>';
                 echo $xml_response;
             }else{
@@ -127,10 +126,8 @@ class WxController extends Controller
         //保存语音文件
         $client = new GuzzleHttp\Client();
         $response = $client->get($url);
-        //var_dump($response);die;
         //获取文件名
         $file_info = $response->getHeader('Content-disposition');
-        //var_dump($file_info);die;
         $file_name = substr(rtrim($file_info[0],'"'),-20);
         if($int==1){
             $wx_image_path = 'wx/images/'.$file_name;
