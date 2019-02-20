@@ -70,11 +70,7 @@ class WxController extends Controller
                     'file_name'=>$returnInfo['file_name']
                 ];
                 $res=WxMediaModel::insertGetId($media_data);
-                if($res){
-                    echo $xml_response;
-                }else{
-                    echo "fail";
-                }
+                echo $xml_response;
 
 
             }elseif ($xml->MsgType=='voice'){
@@ -100,15 +96,13 @@ class WxController extends Controller
                     'file_name'=>$returnInfo['file_name']
                 ];
                 $res=WxMediaModel::insertGetId($media_data);
-                if($res){
-                    echo $xml_response;
-                }
+                echo $xml_response;
             }elseif($xml->MsgType=='video'){
                 $MediaId=$xml->MediaId;
                 //获取微信access_token
                 $access_token=$this->getWXAccessToken();
                 //获取文件名
-                $url=$this->baocunwenjian($access_token,$MediaId,3);
+                $returnInfo=$this->baocunwenjian($access_token,$MediaId,3);
                 $xml_response = '<xml>
                                 <ToUserName><![CDATA['.$openid.']]></ToUserName>
                                 <FromUserName><![CDATA['.$xml->ToUserName.']]></FromUserName>
@@ -126,9 +120,7 @@ class WxController extends Controller
                     'file_name'=>$returnInfo['file_name']
                 ];
                 $res=WxMediaModel::insertGetId($media_data);
-                if($res) {
-                    echo $xml_response;
-                }
+                echo $xml_response;
             }elseif($xml->MsgType=='music'){
                 $MediaId=$xml->MediaId;
                 //获取微信access_token
@@ -152,9 +144,7 @@ class WxController extends Controller
                     'file_name'=>$returnInfo['file_name']
                 ];
                 $res=WxMediaModel::insertGetId($media_data);
-                if($res) {
-                    echo $xml_response;
-                }
+                echo $xml_response;
             }else{
                 if($event=='subscribe'){
                     $sub_time = $xml->CreateTime;               //扫码关注时间
