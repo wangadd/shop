@@ -321,7 +321,7 @@ class WxController extends Controller
         if($request_arr['errcode']==0){
             echo "群发成功";
         }else{
-            echo "群发失败,错误代码".$request_arr['errcode'];
+            echo "群发失败,错误代码".$request_arr['errcode'].",错误信息".$request_arr['errmsg'];
         }
 
     }
