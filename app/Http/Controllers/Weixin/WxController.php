@@ -72,6 +72,20 @@ class WxController extends Controller
                                 <Content><![CDATA['. $url .']]></Content>
                                 </xml>';
                 echo $xml_response;
+            }elseif($xml->MsgType=='video'){
+                $MediaId=$xml->MediaId;
+                //获取微信access_token
+                $access_token=$this->getWXAccessToken();
+                //获取文件名
+                $url=$this->baocunwenjian($access_token,$MediaId,3);
+                $xml_response = '<xml>
+                                <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                                <FromUserName><![CDATA['.$xml->ToUserName.']]></FromUserName>
+                                <CreateTime>'.time().'</CreateTime>
+                                <MsgType><![CDATA[text]]></MsgType>
+                                <Content><![CDATA['. $url .']]></Content>
+                                </xml>';
+                echo $xml_response;
             }else{
                 if($event=='subscribe'){
                     $sub_time = $xml->CreateTime;               //扫码关注时间
@@ -123,6 +137,7 @@ class WxController extends Controller
      */
     public function baocunwenjian($access_token,$MediaId,$int){
         $url='https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$access_token.'&media_id='.$MediaId;
+
         //保存语音文件
         $client = new GuzzleHttp\Client();
         $response = $client->get($url);
@@ -133,6 +148,8 @@ class WxController extends Controller
             $wx_image_path = 'wx/images/'.$file_name;
         }elseif ($int==2){
             $wx_image_path = 'wx/voice/'.$file_name;
+        }elseif ($int==3){
+            $wx_image_path = 'wx/video/'.$file_name;
         }
         //保存素材
         $r = Storage::disk('local')->put($wx_image_path,$response->getBody());
