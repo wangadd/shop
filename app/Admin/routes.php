@@ -11,5 +11,7 @@ Route::group([
 ], function (Router $router) {
 
     $router->get('/', 'HomeController@index');
+    $router->get('/auth/wxuser', 'WeixinController@index');
+    $router->get('/auth/goods', 'GoodsController@index');
 
 });
