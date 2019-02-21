@@ -197,4 +197,19 @@ class WxPmMediaController extends Controller
         $request_arr=json_decode($r->getBody(),true);
         var_dump($request_arr);die;
     }
+
+    /**
+     * Edit interface.
+     *
+     * @param mixed $id
+     * @param Content $content
+     * @return Content
+     */
+    public function edit($id, Content $content)
+    {
+        return $content
+            ->header('Edit')
+            ->description('description')
+            ->body($this->form()->edit($id));
+    }
 }
