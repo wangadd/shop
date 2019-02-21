@@ -9,6 +9,7 @@ use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
+use Illuminate\Support\Facades\Storage;
 
 class WxmediaController extends Controller
 {
@@ -89,7 +90,10 @@ class WxmediaController extends Controller
         $grid->format('Format');
         $grid->mediaid('Mediaid');
         $grid->file_name('File name');
-        $grid->file_path('File path');
+        $grid->file_path('File path')->display(function($path){
+                $url = Storage::url($path);
+                return "<img src='".$url."'>";
+        });
 
         return $grid;
     }
