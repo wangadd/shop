@@ -144,7 +144,7 @@ class WxPmMediaController extends Controller
             'multipart' =>[
                 [
                     'name'=>'media',
-                    'contents'=>fopen($file_path,'r')
+                    'contents'=>fopen($file_path,'rwx')
                 ],
             ],
         ]);
