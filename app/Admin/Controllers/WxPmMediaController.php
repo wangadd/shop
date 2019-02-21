@@ -169,7 +169,7 @@ class WxPmMediaController extends Controller
         $grid->id('Id');
         $grid->media_id('Media Id');
         $grid->url('Url')->display(function ($path){
-            return "<img src='".$path."'>";
+            return "<img src='".$path."' style='width:100px; height:50px;'>";
         });
         $grid->add_time('Add time');
         return $grid;
