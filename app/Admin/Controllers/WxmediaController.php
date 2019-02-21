@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Storage;
 class WxmediaController extends Controller
 {
     use HasResourceActions;
-
     /**
      * Index interface.
      *
@@ -28,7 +27,6 @@ class WxmediaController extends Controller
             ->description('description')
             ->body($this->grid());
     }
-
     /**
      * Show interface.
      *
@@ -43,7 +41,6 @@ class WxmediaController extends Controller
             ->description('description')
             ->body($this->detail($id));
     }
-
     /**
      * Edit interface.
      *
@@ -58,7 +55,6 @@ class WxmediaController extends Controller
             ->description('description')
             ->body($this->form()->edit($id));
     }
-
     /**
      * Create interface.
      *
@@ -72,7 +68,6 @@ class WxmediaController extends Controller
             ->description('description')
             ->body($this->form());
     }
-
     /**
      * Make a grid builder.
      *
@@ -97,7 +92,6 @@ class WxmediaController extends Controller
 
         return $grid;
     }
-
     /**
      * Make a show builder.
      *
@@ -120,7 +114,6 @@ class WxmediaController extends Controller
 
         return $show;
     }
-
     /**
      * Make a form builder.
      *

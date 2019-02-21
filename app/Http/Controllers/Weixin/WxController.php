@@ -379,9 +379,4 @@ class WxController extends Controller
         }
 
     }
-
-
-    public function test(){
-        echo __ROOT__;
-    }
 }

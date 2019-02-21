@@ -13,6 +13,17 @@ Route::group([
     $router->get('/', 'HomeController@index');
     $router->get('/auth/wxuser', 'WeixinController@index');
     $router->get('/auth/goods', 'GoodsController@index');
-    $router->get('/auth/wxmedia', 'WxmediaController@index');
+    $router->resource('/auth/wxmedia', WxmediaController::class);
+
+    //群发消息
+    $router->get('/auth/groupsending', 'WxPmMediaController@GroupSendingView');
+    $router->post('/auth', 'WxPmMediaController@GroupSending');
+    //新增永久素材
+    $router->get('/auth/wxpmmedia', 'WxPmMediaController@index');
+    $router->get('/auth/wxpmmedia/create', 'WxPmMediaController@create');
+    $router->post('/auth/wxpmmedia', 'WxPmMediaController@doCreate');
+
+    //获取素材列表
+    $router->get('/auth/wxpmmedia/getmedia', 'WxPmMediaController@getPmMedia');
 
 });
