@@ -19,5 +19,6 @@ class VerifyCsrfToken extends Middleware
         '/weixin/groupsending',
         '/auth',
         '/auth/wxpmmedia',
+        '/auth/wxpmmedia/{id}',
     ];
 }

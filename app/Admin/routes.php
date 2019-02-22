@@ -23,7 +23,11 @@ Route::group([
     $router->get('/auth/wxpmmedia/create', 'WxPmMediaController@create');
     $router->post('/auth/wxpmmedia', 'WxPmMediaController@doCreate');
 
+    //删除素材
+    $router->get('/auth/wxpmmedia/delete/{id}', 'WxPmMediaController@delete');
+
     //获取素材列表
     $router->get('/auth/wxpmmedia/getmedia', 'WxPmMediaController@getPmMedia');
+    $router->resource('/auth/wxmedia', WxPmMediaController::class);
 
 });

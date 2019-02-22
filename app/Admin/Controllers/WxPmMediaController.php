@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Redis;
 class WxPmMediaController extends Controller
 {
     protected $redis_weixin_access_token = 'str:weixin_access_token';
-    use HasResourceActions;
     /**
      * 获取群发内容
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -29,6 +28,10 @@ class WxPmMediaController extends Controller
             ->description('description')
             ->body($this->form1());
     }
+    /**
+     * 群发视图层
+     * @return Form
+     */
     public function form1(){
         $form=new Form(new WxPmMedia);
         $form->textarea('group','群发内容');
@@ -61,7 +64,7 @@ class WxPmMediaController extends Controller
         //解析微信接口返回信息
         $request_arr=json_decode($r->getBody(),true);
         if($request_arr['errcode']==0){
-            header("Location:http://shop.test.com/admin/auth/groupsending");
+            echo  'success';
         }else{
             echo "群发失败,错误代码".$request_arr['errcode'].",错误信息".$request_arr['errmsg'];
         }
@@ -87,8 +90,11 @@ class WxPmMediaController extends Controller
         return $token;
 
     }
-
-
+    /**
+     * 新增素材
+     * @param Content $content
+     * @return Content
+     */
     public function create(Content $content)
     {
         return $content
@@ -129,10 +135,9 @@ class WxPmMediaController extends Controller
             echo "上传失败";
         }
     }
-
     /**
-     * 上传素材
-     * @param $file_path
+     *  上传素材
+     *  @param $file_path
      */
     public function upMedia($file_path,$type){
         //获取access_token
@@ -153,6 +158,7 @@ class WxPmMediaController extends Controller
         return $result;
     }
     /**
+     * 素材展示
      * @param Content $content
      * @return Content
      */
@@ -172,9 +178,17 @@ class WxPmMediaController extends Controller
             return "<img src='".$path."' style='width:100px; height:50px;'>";
         });
         $grid->add_time('Add time');
+        $grid->actions(function ($actions) {
+            $actions->disableDelete();
+            $actions->disableEdit();
+            $actions->disableView();
+            // 获取当前行主键值
+            $id = $actions->getKey();
+            //添加删除按钮
+            $actions->append("<a href='/admin/auth/wxpmmedia/delete/".$id."'>删除</a>");
+        });
         return $grid;
     }
-
     /**
      * 获取永久素材列表
      */
@@ -198,18 +212,25 @@ class WxPmMediaController extends Controller
         var_dump($request_arr);die;
     }
 
-    /**
-     * Edit interface.
-     *
-     * @param mixed $id
-     * @param Content $content
-     * @return Content
-     */
-    public function edit($id, Content $content)
-    {
-        return $content
-            ->header('Edit')
-            ->description('description')
-            ->body($this->form()->edit($id));
+    public function delete($id){
+        $info=WxPmMedia::where(['id'=>$id])->first();
+        $media_id=$info->media_id;
+        //获取access_token
+        $access_token=$this->getWXAccessToken();
+        $url='https://api.weixin.qq.com/cgi-bin/material/del_material?access_token='.$access_token;
+        //调用微信接口
+        $client = new GuzzleHttp\Client();
+        $data=[
+            'media_id'=>$media_id,
+        ];
+        $r=$client->request('POST',$url,[
+            'body'=>json_encode($data,JSON_UNESCAPED_UNICODE)
+        ]);
+        //解析微信接口返回信息
+        $request_arr=json_decode($r->getBody(),true);
+        $rs=WxPmMedia::where(['id'=>$id])->delete();
+        if($request_arr['errcode']==0){
+            echo "删除成功";
+        }
     }
 }

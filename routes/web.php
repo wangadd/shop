@@ -112,3 +112,6 @@ Route::get('/weixin/getmediaid','Weixin\WxController@getMediaId');//获取media_
 
 
 
+
+
+
