@@ -2,7 +2,7 @@
 
 @section('content')
         <h1 align="center">和 <font color="red" id="nickname">{{$info->nickname}}</font>聊天界面</h1>
-        <div style="margin:0 auto; width:700px;height:500px; border:solid red 1px;" id="demo">
+        <div style="margin:0 auto; width:700px;height:500px; overflow-y: scroll;  border:solid red 1px;" id="demo">
 
         </div>
         <div style="margin:0 auto; width:700px;height:30px;">
