@@ -56,7 +56,7 @@
                                 headers: {
                                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                                 },
-                                url     :   '/weixin/valid',
+                                url     :   '/weixin/sendview/17',
                                 type    :   'post',
                                 data    :   {},
                                 success :   function(res){

@@ -115,7 +115,7 @@ Route::get('/weixin/getmediaid','Weixin\WxController@getMediaId');//获取media_
 Route::get('/weixin/wxuser','Weixin\WxController@Wxuser');
 Route::get('/weixin/sendview/{id}','Weixin\WxController@sendView');
 Route::post('/weixin/send','Weixin\WxController@send');
-Route::post('/weixin/huifu','Weixin\WxController@huifu');
+Route::post('weixin/sendview/{id}','Weixin\WxController@huifu');
 
 
 

@@ -21,7 +21,7 @@ class VerifyCsrfToken extends Middleware
         '/auth/wxpmmedia',
         '/auth/wxpmmedia/{id}',
         '/auth/wxuser/send',
-        '/weixin/huifu',
+        '/weixin/sendview/{id}',
 
     ];
 }
