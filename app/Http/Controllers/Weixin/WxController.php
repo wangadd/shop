@@ -459,7 +459,7 @@ class WxController extends Controller
     }
     public function getMsg(Request $request){
         $openid=$request->input('openid');
-        $msg=WxTextModel::orderBy('add_time','desc')->where('openid',$openid)->paginte(10);
+        $msg=WxTextModel::orderBy('add_time','desc')->where('openid',$openid)->paginate(10);
         echo json_encode($msg);
     }
 }
