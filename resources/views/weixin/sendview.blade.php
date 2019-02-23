@@ -39,8 +39,16 @@
                         type    :   'post',
                         data    :   {openid:openid},
                         success :   function(res){
-                            var _t="<h4 color='green'>"+nickname+":"+res.text+"</h4>";
-                            $('#demo').append(_t)
+                            $.each(res,function(i,n){
+                                if(n.openid==1){
+                                    var _h="<h4 color='green'>客服:"+n.text+"</h4>";
+                                    $('#demo').append(_h)
+                                }else{
+                                    var _t="<h4 color='green'>"+nickname+":"+n.text+"</h4>";
+                                    $('#demo').append(_t)
+                                }
+                            })
+
                         },
                         dataType:'json',
                     });
