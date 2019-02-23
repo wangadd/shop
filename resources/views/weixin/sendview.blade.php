@@ -30,7 +30,7 @@
                 var openid=$('#openid').val();
                 var text=$('#text').val();
                 setInterval(function () {
-                    $('#demo').empty();
+
                     $.ajax({
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -39,8 +39,9 @@
                         type    :   'post',
                         data    :   {openid:openid},
                         success :   function(res){
+                            $('#demo').empty();
                             $.each(res,function(i,n){
-                                if(n.openid==1){
+                                if(n.senduser=='客服'){
                                     var _h="<h4 color='green'>客服:"+n.text+"</h4>";
                                     $('#demo').append(_h)
                                 }else{

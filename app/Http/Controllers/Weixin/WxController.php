@@ -427,6 +427,7 @@ class WxController extends Controller
             $kefuInfo=[
                 'openid'=>1,
                 'text'=>$text,
+                'senduser'=>'客服',
                 'add_time'=>time()
             ];
             $rs=WxTextModel::insertGetId($kefuInfo);
@@ -450,6 +451,7 @@ class WxController extends Controller
         $msg=$xml->Content;
         $yhInfo=[
             'openid'=>$openids,
+            'senduser'=>$openids,
             'text'=>$msg,
             'add_time'=>time(),
         ];
@@ -459,7 +461,7 @@ class WxController extends Controller
     }
     public function getMsg(Request $request){
         $openid=$request->input('openid');
-        $msg=WxTextModel::orderBy('add_time','desc')->where('openid',$openid)->paginate(10);
+        $msg=WxTextModel::orderBy('add_time','desc')->where('openid',$openid)->get();
         echo json_encode($msg);
     }
 }
