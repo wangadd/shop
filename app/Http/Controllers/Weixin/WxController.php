@@ -423,7 +423,7 @@ class WxController extends Controller
                 'msg'=>'发送成功'
             ];
             $kefuInfo=[
-                'openid'=>1,
+                'openid'=>$openid,
                 'text'=>$text,
                 'senduser'=>'客服',
                 'add_time'=>time()
