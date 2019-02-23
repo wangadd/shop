@@ -37,8 +37,17 @@ class WxController extends Controller
 
         //处理用户发送的文本消息
         if(isset($xml->MsgType)){
-            if($xml->MsgType=='aaa'){
-
+            if($xml->MsgType=='text'){
+                //获取用户回复消息
+                $msg=$xml->Content;
+                $yhInfo=[
+                    'openid'=>$openid,
+                    'text'=>$msg,
+                    'add_time'=>time(),
+                ];
+                $rs=WxTextModel::InsertGetId($yhInfo);
+                $msg=WxTextModel::orderBy('add_time','desc')->where('openid',$openid)->first();
+                echo json_encode($msg);
             }elseif ($xml->MsgType=='image'){
                 $MediaId=$xml->MediaId;
                 //获取微信access_token

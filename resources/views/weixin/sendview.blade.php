@@ -56,7 +56,7 @@
                                 headers: {
                                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                                 },
-                                url     :   '/weixin/huifu',
+                                url     :   '/weixin/valid',
                                 type    :   'post',
                                 data    :   {},
                                 success :   function(res){
