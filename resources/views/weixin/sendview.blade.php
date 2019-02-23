@@ -64,7 +64,6 @@
                     type    :   'post',
                     data    :   {openid:openid,text:text},
                     success :   function(res){
-                        alert(res.msg)
                         if(res.code=='1'){
                             var _h="<h4 color='green'>客服:"+text+"</h4>";
                             $('#demo').append(_h)
