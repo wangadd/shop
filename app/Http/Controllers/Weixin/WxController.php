@@ -38,7 +38,14 @@ class WxController extends Controller
         //处理用户发送的文本消息
         if(isset($xml->MsgType)){
             if($xml->MsgType=='肯德基奥斯卡的话'){
-//
+                $msg=$xml->Content;
+                $yhInfo=[
+                    'openid'=>$openid,
+                    'senduser'=>$openid,
+                    'text'=>$msg,
+                    'add_time'=>time(),
+                ];
+                $rs=WxTextModel::InsertGetId($yhInfo);
             }elseif ($xml->MsgType=='image'){
                 $MediaId=$xml->MediaId;
                 //获取微信access_token
@@ -430,26 +437,26 @@ class WxController extends Controller
     /**
      * 获取回复消息
      */
-    public function huifu(Request $request){
-        //获取用户回复消息
-        $data = file_get_contents("php://input");
-        $log_str = date('Y-m-d H:i:s') . "\n" . $data . "\n<<<<<<<";
-        file_put_contents('logs/wx_event.log',$log_str,FILE_APPEND);
-        //解析XML
-        $xml = simplexml_load_string($data);        //将 xml字符串 转换成对象
-        $event = $xml->Event;                       //事件类型
-        $openids = $xml->FromUserName;               //用户openid
-        $msg=$xml->Content;
-        $yhInfo=[
-            'openid'=>$openids,
-            'senduser'=>$openids,
-            'text'=>$msg,
-            'add_time'=>time(),
-        ];
-        $rs=WxTextModel::InsertGetId($yhInfo);
-
-
-    }
+//    public function huifu(Request $request){
+//        //获取用户回复消息
+//        $data = file_get_contents("php://input");
+//        $log_str = date('Y-m-d H:i:s') . "\n" . $data . "\n<<<<<<<";
+//        file_put_contents('logs/wx_event.log',$log_str,FILE_APPEND);
+//        //解析XML
+//        $xml = simplexml_load_string($data);        //将 xml字符串 转换成对象
+//        $event = $xml->Event;                       //事件类型
+//        $openids = $xml->FromUserName;               //用户openid
+//        $msg=$xml->Content;
+//        $yhInfo=[
+//            'openid'=>$openids,
+//            'senduser'=>$openids,
+//            'text'=>$msg,
+//            'add_time'=>time(),
+//        ];
+//        $rs=WxTextModel::InsertGetId($yhInfo);
+//
+//
+//    }
     public function getMsg(Request $request){
         $openid=$request->input('openid');
         $msg=WxTextModel::orderBy('add_time','asc')->where('openid',$openid)->get();
