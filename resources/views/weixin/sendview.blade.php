@@ -40,12 +40,14 @@
                         success :   function(res){
                             $('#demo').empty();
                             $.each(res,function(i,n){
-                                if(n.senduser=='客服'){
-                                    var _h="<h4 color='green'>客服:"+n.text+"</h4>";
-                                    $('#demo').append(_h)
-                                }else{
-                                    var _t="<h4 color='green'>"+nickname+":"+n.text+"</h4>";
+                                if(n['senduser']==openid){
+                                    var _t="<h4 color='green'>"+nickname+":"+n['text']+"</h4>";
                                     $('#demo').append(_t)
+
+                                }else{
+                                    var _h="<h4 color='green'>客服:"+n['text']+"</h4>";
+                                    $('#demo').append(_h)
+
                                 }
                             })
 
