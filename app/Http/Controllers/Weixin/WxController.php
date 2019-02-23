@@ -37,7 +37,7 @@ class WxController extends Controller
 
         //处理用户发送的文本消息
         if(isset($xml->MsgType)){
-            if($xml->MsgType=='肯德基奥斯卡的话'){
+            if($xml->MsgType=='text'){
                 $msg=$xml->Content;
                 $yhInfo=[
                     'openid'=>$openid,

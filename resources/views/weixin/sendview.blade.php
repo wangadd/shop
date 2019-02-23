@@ -30,7 +30,6 @@
                 var openid=$('#openid').val();
                 var text=$('#text').val();
                 setInterval(function () {
-
                     $.ajax({
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
