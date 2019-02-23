@@ -11,9 +11,11 @@ Route::group([
 ], function (Router $router) {
 
     $router->get('/', 'HomeController@index');
-    $router->get('/auth/wxuser', 'WeixinController@index');
+    $router->resource('/auth/wxuser', WeixinController::class);
     $router->get('/auth/goods', 'GoodsController@index');
     $router->resource('/auth/wxmedia', WxmediaController::class);
+    $router->get('/auth/wxuser/send/{id}', 'WeixinController@sendView');
+    $router->post('/auth/wxuser/send', 'WeixinController@send');
 
     //群发消息
     $router->get('/auth/groupsending', 'WxPmMediaController@GroupSendingView');

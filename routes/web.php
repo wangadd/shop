@@ -95,7 +95,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/pay/delete','Pay\PayController@deleteOrder');
 Route::get('/test','Test\Test@test');
 //文件上传
-Route::get('/goods/upload','Goods\GoodsController@upload');
+Route::get('/goods/test','Goods\GoodsController@upload');
 Route::post('/goods/upload/do','Goods\GoodsController@uploadDo');
 
 
@@ -108,6 +108,14 @@ Route::get('/weixin/create_menu','Weixin\WxController@createMenu');
 Route::get('/weixin/groupsending','Weixin\WxController@GroupSendingView');
 Route::post('/weixin/groupsending','Weixin\WxController@GroupSending');
 Route::get('/weixin/getmediaid','Weixin\WxController@getMediaId');//获取media_id
+
+
+
+//微信互动    用户信息表
+Route::get('/weixin/wxuser','Weixin\WxController@Wxuser');
+Route::get('/weixin/sendview/{id}','Weixin\WxController@sendView');
+Route::post('/weixin/send','Weixin\WxController@send');
+Route::post('/weixin/huifu','Weixin\WxController@huifu');
 
 
 

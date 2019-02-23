@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Weixin;
 
 use App\Model\WxMediaModel;
+use App\Model\WxTextModel;
 use App\Model\WxuserModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -36,16 +37,8 @@ class WxController extends Controller
 
         //处理用户发送的文本消息
         if(isset($xml->MsgType)){
-            if($xml->MsgType=='text'){
-                $msg=$xml->Content;
-                $xml_response = '<xml>
-                        <ToUserName><![CDATA['.$openid.']]></ToUserName>
-                        <FromUserName><![CDATA['.$xml->ToUserName.']]></FromUserName>
-                        <CreateTime>'.time().'</CreateTime>
-                        <MsgType><![CDATA[text]]></MsgType>
-                        <Content><![CDATA['.$msg .']]></Content>
-                        </xml>';
-                echo $xml_response;
+            if($xml->MsgType=='aaa'){
+
             }elseif ($xml->MsgType=='image'){
                 $MediaId=$xml->MediaId;
                 //获取微信access_token
@@ -254,7 +247,6 @@ class WxController extends Controller
                         </xml>';
         echo $xml_response;
     }
-
     /**
      * 获取微信AccessToken
      */
@@ -338,7 +330,6 @@ class WxController extends Controller
         }
 
     }
-
     /**
      * 获取群发内容
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -377,6 +368,79 @@ class WxController extends Controller
         }else{
             echo "群发失败,错误代码".$request_arr['errcode'].",错误信息".$request_arr['errmsg'];
         }
+
+    }
+    /**
+     * 试图
+     */
+    public function Wxuser(){
+        $userInfo=WxuserModel::all();
+        $info=[
+            'data'=>$userInfo
+        ];
+        return view('weixin.userlist',$info);
+    }
+    public function sendView($id){
+        $where=[
+            'id'=>$id
+        ];
+        $info=WxuserModel::where($where)->first();
+        $data=[
+            'info'=>$info,
+            'textInfo'=>[],
+        ];
+        return view('weixin.sendview',$data);
+    }
+    public function send(Request $request){
+        $openid=$request->input('openid');
+        $text=$request->input('text');
+        $access_token=$this->getWXAccessToken();
+        $url="https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=".$access_token;
+        //调用微信接口
+        $client = new GuzzleHttp\Client();
+        $data=[
+            "touser"=>$openid,
+            "msgtype"=>"text",
+            "text"=>[
+                "content"=>$text
+            ],
+        ];
+        $r=$client->request('POST',$url,[
+            'body'=>json_encode($data,JSON_UNESCAPED_UNICODE)
+        ]);
+        //解析微信接口返回信息
+        $request_arr=json_decode($r->getBody(),true);
+        if($request_arr['errcode']==0){
+            $arr=[
+                'code'=>1,
+                'msg'=>'发送成功'
+            ];
+            echo json_encode($arr);
+        }else{
+            echo "发送失败,错误代码".$request_arr['errcode'].",错误信息".$request_arr['errmsg'];
+        }
+    }
+    /**
+     * 获取回复消息
+     */
+    public function huifu(Request $request){
+        //获取用户回复消息
+        $data = file_get_contents("php://input");
+        $log_str = date('Y-m-d H:i:s') . "\n" . $data . "\n<<<<<<<";
+        file_put_contents('logs/wx_event.log',$log_str,FILE_APPEND);
+        //解析XML
+        $xml = simplexml_load_string($data);        //将 xml字符串 转换成对象
+        $event = $xml->Event;                       //事件类型
+        $openids = $xml->FromUserName;               //用户openid
+        $msg=$xml->Content;
+        $yhInfo=[
+            'openid'=>$openids,
+            'text'=>$msg,
+            'add_time'=>time(),
+        ];
+        $rs=WxTextModel::InsertGetId($yhInfo);
+        $msg=WxTextModel::orderBy('add_time','desc')->where('openid',$openids)->first();
+        echo json_encode($msg);
 
     }
 }
