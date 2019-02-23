@@ -1,19 +1,9 @@
 @extends('layouts.bootstrap')
 
 @section('content')
-        <h1 align="center">和 <font color="red">{{$info->nickname}}</font>聊天界面</h1>
+        <h1 align="center">和 <font color="red" id="nickname">{{$info->nickname}}</font>聊天界面</h1>
         <div style="margin:0 auto; width:700px;height:500px; border:solid red 1px;" id="demo">
-                {{--<table  border="1" class="table table-bordered" >--}}
-                    {{--@foreach($textInfo as $k=>$v)--}}
-                        {{--<tr>--}}
-                           {{--@if($v->openid=='1')--}}
-                               {{--客服:{{$v->text}}--}}
-                           {{--@else--}}
-                              {{--{{$info->nickname}}:{{$v->text}}--}}
-                           {{--@endif--}}
-                        {{--</tr>--}}
-                    {{--@endforeach--}}
-                {{--</table>--}}
+
         </div>
         <div style="margin:0 auto; width:700px;height:30px;">
         <form class="form-inline">
@@ -36,8 +26,25 @@
 
             $('#add_cart_btn').click(function (e) {
                 e.preventDefault();
+                var nickname=$('#nickname').text();
                 var openid=$('#openid').val();
                 var text=$('#text').val();
+                setInterval(function () {
+                    $('#demo').empty();
+                    $.ajax({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        url     :   '/weixin/getmsg',
+                        type    :   'post',
+                        data    :   {openid:openid},
+                        success :   function(res){
+                            var _t="<h4 color='green'>"+nickname+":"+res.text+"</h4>";
+                            $('#demo').append(_t)
+                        },
+                        dataType:'json',
+                    });
+                },5000)
 
                 $.ajax({
                     headers: {
@@ -52,20 +59,6 @@
                             var _h="<h4 color='green'>客服:"+text+"</h4>";
                             $('#demo').append(_h)
                             $('#text').val('');
-                            $.ajax({
-                                headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                },
-                                url     :   '/weixin/sendview/17',
-                                type    :   'post',
-                                data    :   {},
-                                success :   function(res){
-                                    var _h="<h4 color='green'>用户:"+res.text+"</h4>";
-                                    $('#demo').append(_h)
-                                    $('#text').val('');
-                                },
-                                dataType:'json',
-                            });
                         }
                     },
                     dataType:'json',

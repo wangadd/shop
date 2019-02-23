@@ -424,6 +424,12 @@ class WxController extends Controller
                 'code'=>1,
                 'msg'=>'发送成功'
             ];
+            $kefuInfo=[
+                'openid'=>1,
+                'text'=>$text,
+                'add_time'=>time()
+            ];
+            $rs=WxTextModel::insertGetId($kefuInfo);
             echo json_encode($arr);
         }else{
             echo "发送失败,错误代码".$request_arr['errcode'].",错误信息".$request_arr['errmsg'];
@@ -448,8 +454,12 @@ class WxController extends Controller
             'add_time'=>time(),
         ];
         $rs=WxTextModel::InsertGetId($yhInfo);
-        $msg=WxTextModel::orderBy('add_time','desc')->where('openid',$openids)->first();
-        echo json_encode($msg);
 
+
+    }
+    public function getMsg(Request $request){
+        $openid=$request->input('openid');
+        $msg=WxTextModel::orderBy('add_time','desc')->where('openid',$openid)->paginte(10);
+        echo json_encode($msg);
     }
 }
