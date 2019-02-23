@@ -30,38 +30,38 @@
     @parent
     <script>
         $(function(){
-            var nickname=$('#nickname').text();
-            var openid=$('#openid').val();
-            var text=$('#text').val();
-            setInterval(function () {
-                $.ajax({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    url     :   '/weixin/getmsg',
-                    type    :   'post',
-                    data    :   {openid:openid},
-                    success :   function(res){
-                        $('#demo').empty();
-                        $.each(res,function(i,n){
-                            if(n['senduser']==openid){
-                                var _t="<h4 color='green'>"+nickname+":"+n['text']+"</h4>";
-                                $('#demo').append(_t)
-
-                            }else{
-                                var _h="<h4 color='green'>客服:"+n['text']+"</h4>";
-                                $('#demo').append(_h)
-
-                            }
-                        })
-
-                    },
-                    dataType:'json',
-                });
-            },5000)
 
             $('#add_cart_btn').click(function (e) {
                 e.preventDefault();
+                var nickname=$('#nickname').text();
+                var openid=$('#openid').val();
+                var text=$('#text').val();
+                setInterval(function () {
+                    $.ajax({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        url     :   '/weixin/getmsg',
+                        type    :   'post',
+                        data    :   {openid:openid},
+                        success :   function(res){
+                            $('#demo').empty();
+                            $.each(res,function(i,n){
+                                if(n['senduser']==openid){
+                                    var _t="<h4 color='green'>"+nickname+":"+n['text']+"</h4>";
+                                    $('#demo').append(_t)
+
+                                }else{
+                                    var _h="<h4 color='green'>客服:"+n['text']+"</h4>";
+                                    $('#demo').append(_h)
+
+                                }
+                            })
+
+                        },
+                        dataType:'json',
+                    });
+                },5000)
 
                 $.ajax({
                     headers: {
