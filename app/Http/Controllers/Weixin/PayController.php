@@ -141,9 +141,9 @@ class PayController extends Controller
     {
         $data = file_get_contents("php://input");
 
-        //记录日志
-        $log_str = date('Y-m-d H:i:s') . "\n" . $data . "\n<<<<<<<";
-        file_put_contents('logs/wx_pay_notice.log',$log_str,FILE_APPEND);
+//        //记录日志
+//        $log_str = date('Y-m-d H:i:s') . "\n" . $data . "\n<<<<<<<";
+//        file_put_contents('logs/wx_pay_notice.log',$log_str,FILE_APPEND);
 
         $xml = simplexml_load_string($data);
         if($xml->result_code=='SUCCESS' && $xml->return_code=='SUCCESS'){      //微信支付成功回调
@@ -170,7 +170,7 @@ class PayController extends Controller
             if($sign){       //签名验证成功
                 //TODO 逻辑处理  订单状态更新
                 $where=[
-                    'order_num'=>$xml->out_trade_no,
+                    'order_num'=>substr($xml->out_trade_no,2),
                 ];
                 //修改订单详情表
                 $detailInfo=DetailModel::where($where)->get();
