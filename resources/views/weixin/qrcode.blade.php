@@ -23,20 +23,22 @@
             colorLight : '#ffffff',
             correctLevel : QRCode.CorrectLevel.H
         });
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            url     :   '/weixin/pay/find',
-            type    :   'post',
-            data    :   {order_num:order_num},
-            success :   function(res){
-                if(res.code==1){
-                    alert('支付成功');
-                    location.href="/orderlist";
-                }
-            },
-            dataType:'json',
-        });
+        setInterval(function () {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url     :   '/weixin/pay/find',
+                type    :   'post',
+                data    :   {order_num:order_num},
+                success :   function(res){
+                    if(res.code==1){
+                        alert('支付成功');
+                        location.href="/orderlist";
+                    }
+                },
+                dataType:'json',
+            })
+        },3000);
     </script>
 @endsection

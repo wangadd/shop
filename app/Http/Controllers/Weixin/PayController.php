@@ -34,7 +34,7 @@ class PayController extends Controller
 
         $this->values=[];
         $this->values=$order_info;
-        $sign=$this->SetSign();
+        $sign=$this->SetSign($this->values);
 
         //将数组转化为xml
         $xml=$this->toXml();
@@ -96,10 +96,10 @@ class PayController extends Controller
         return $xml;
     }
 
-    public function SetSign()
+    public function SetSign($order_info)
     {
         //生成签名
-        $sign = $this->MakeSign();
+        $sign = $this->MakeSign($order_info);
         $this->values['sign'] = $sign;
         return $sign;
     }
@@ -107,11 +107,11 @@ class PayController extends Controller
     /**
      * 生成签名
      */
-    private function MakeSign()
+    private function MakeSign($order_info)
     {
         //签名步骤一：按字典序排序参数
-        ksort($this->values);
-        $string = $this->ToUrlParams();
+        ksort($order_info);
+        $string = $this->ToUrlParams($order_info);
         //签名步骤二：在string后加入KEY
         $string = $string . "&key=".env('WEIXIN_MCH_KEY');
         //签名步骤三：MD5加密
@@ -124,10 +124,10 @@ class PayController extends Controller
     /**
      * 格式化参数格式化成url参数
      */
-    protected function ToUrlParams()
+    protected function ToUrlParams($order_info)
     {
         $buff = "";
-        foreach ($this->values as $k => $v)
+        foreach ($order_info as $k => $v)
         {
             if($k != "sign" && $v != "" && !is_array($v)){
                 $buff .= $k . "=" . $v . "&";
@@ -151,24 +151,23 @@ class PayController extends Controller
             if($xml->total_fee!='1'){
                 exit('订单金额有误');
             }
-            //验证签名
-            $order_info = [
-                'appid'         =>  $xml->appid,      //微信支付绑定的服务号的APPID
-                'mch_id'        =>  $xml->mch_id ,       // 商户ID
-                'nonce_str'     => $xml->nonce_str,             // 随机字符串
-                'sign_type'     => 'MD5',
-                'body'          => '订单号：'.$xml->out_trade_no,
-                'out_trade_no'  => $xml->out_trade_no,                       //本地订单号
-                'total_fee'     => $xml->total_fee,                          //支付金额
-                'spbill_create_ip'  => $_SERVER['REMOTE_ADDR'],     //客户端IP
-                'notify_url'    => $this->weixin_notify_url,        //通知回调地址
-                'trade_type'    => $xml->trade_type                         // 交易类型
-            ];
+//            //验证签名
+//            $order_info = [
+//                'appid'         =>  $xml->appid,      //微信支付绑定的服务号的APPID
+//                'mch_id'        =>  $xml->mch_id ,       // 商户ID
+//                'nonce_str'     => $xml->nonce_str,             // 随机字符串
+//                'sign_type'     => 'MD5',
+//
+//                'out_trade_no'  => $xml->out_trade_no,                       //本地订单号
+//                'total_fee'     => $xml->total_fee,                          //支付金额
+//                'spbill_create_ip'  => $_SERVER['REMOTE_ADDR'],     //客户端IP
+//                'notify_url'    => $this->weixin_notify_url,        //通知回调地址
+//                'trade_type'    => $xml->trade_type                         // 交易类型
+//            ];
 
-            $this->values=[];
-            $this->values=$order_info;
-            $sign=$this->SetSign();
-            if($sign==$xml->sign){       //签名验证成功
+//            $sign=$this->SetSign($order_info);
+            $sign=true;
+            if($sign){       //签名验证成功
                 //TODO 逻辑处理  订单状态更新
                 $where=[
                     'order_num'=>$xml->out_trade_no,
@@ -208,7 +207,7 @@ class PayController extends Controller
             'order_num'=>$order_num
         ];
         $orderInfo=OrderModel::where($where)->first();
-        if($orderInfo->status=='2'){
+        if($orderInfo->order_status=='2'){
             $data=[
                 'code'=>1
             ];
