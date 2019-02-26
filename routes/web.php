@@ -122,6 +122,7 @@ Route::post('weixin/getmsg','Weixin\WxController@getMsg');
 //微信支付
 Route::get('/weixin/pay/test/{order_num}','Weixin\PayController@test');
 Route::any('/weixin/pay/notice','Weixin\PayController@notice');
+Route::post('/weixin/pay/find','Weixin\PayController@find');
 
 
 

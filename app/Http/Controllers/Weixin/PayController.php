@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Weixin;
 
+use App\Model\DetailModel;
+use App\Model\OrderModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -10,7 +12,6 @@ class PayController extends Controller
     public $weixin_unifiedorder_url = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
 
     public $weixin_notify_url = 'https://king.tactshan.com/weixin/pay/notice';     //支付通知回调
-
 
     public function test($order_num){
         //订单号
@@ -22,7 +23,7 @@ class PayController extends Controller
             'mch_id'        =>  env('WEIXIN_MCH_ID'),       // 商户ID
             'nonce_str'     => str_random(16),             // 随机字符串
             'sign_type'     => 'MD5',
-            'body'          => '测试订单-'.mt_rand(1111,9999) . str_random(6),
+            'body'          => '订单号：'.$order_num,
             'out_trade_no'  => $order_num,                       //本地订单号
             'total_fee'     => $total,                          //支付金额
             'spbill_create_ip'  => $_SERVER['REMOTE_ADDR'],     //客户端IP
@@ -33,7 +34,7 @@ class PayController extends Controller
 
         $this->values=[];
         $this->values=$order_info;
-        $info=$this->SetSign();
+        $sign=$this->SetSign();
 
         //将数组转化为xml
         $xml=$this->toXml();
@@ -42,7 +43,7 @@ class PayController extends Controller
         $data =  simplexml_load_string($res);
         $code_url=$data->code_url;
         //将code_url传给前端控制器生成二维码
-        return view('weixin.qrcode',['code_url'=>$code_url]);
+        return view('weixin.qrcode',['code_url'=>$code_url,['order_num'=>$order_num]]);
 
     }
 
@@ -95,9 +96,6 @@ class PayController extends Controller
         return $xml;
     }
 
-
-
-
     public function SetSign()
     {
         //生成签名
@@ -148,15 +146,48 @@ class PayController extends Controller
         file_put_contents('logs/wx_pay_notice.log',$log_str,FILE_APPEND);
 
         $xml = simplexml_load_string($data);
-
         if($xml->result_code=='SUCCESS' && $xml->return_code=='SUCCESS'){      //微信支付成功回调
+            //验证订单金额
+            if($xml->total_fee!='1'){
+                exit('订单金额有误');
+            }
             //验证签名
-            $sign = true;
+            $order_info = [
+                'appid'         =>  $xml->appid,      //微信支付绑定的服务号的APPID
+                'mch_id'        =>  $xml->mch_id ,       // 商户ID
+                'nonce_str'     => $xml->nonce_str,             // 随机字符串
+                'sign_type'     => 'MD5',
+                'body'          => '订单号：'.$xml->out_trade_no,
+                'out_trade_no'  => $xml->out_trade_no,                       //本地订单号
+                'total_fee'     => $xml->total_fee,                          //支付金额
+                'spbill_create_ip'  => $_SERVER['REMOTE_ADDR'],     //客户端IP
+                'notify_url'    => $this->weixin_notify_url,        //通知回调地址
+                'trade_type'    => $xml->trade_type                         // 交易类型
+            ];
 
-            if($sign){       //签名验证成功
+            $this->values=[];
+            $this->values=$order_info;
+            $sign=$this->SetSign();
+            if($sign==$xml->sign){       //签名验证成功
                 //TODO 逻辑处理  订单状态更新
-
-
+                $where=[
+                    'order_num'=>$xml->out_trade_no,
+                ];
+                //修改订单详情表
+                $detailInfo=DetailModel::where($where)->get();
+                foreach ($detailInfo as $k=>$v){
+                    $detail=[
+                        'status'=>2
+                    ];
+                    DetailModel::where($where)->update($detail);
+                }
+                //修改订单状态
+                //修改订单时间
+                $orderData=[
+                    'order_status'=>2,
+                    'pay_time'=>time()
+                ];
+                $res=OrderModel::where($where)->update($orderData);
             }else{
                 //TODO 验签失败
                 echo '验签失败，IP: '.$_SERVER['REMOTE_ADDR'];
@@ -168,6 +199,25 @@ class PayController extends Controller
         $response = '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
         echo $response;
 
+    }
+
+    public function find(Request $request){
+        $order_num=$request->input('order_num');
+        $where=[
+            'order_num'=>$order_num
+        ];
+        $orderInfo=OrderModel::where($where)->first();
+        if($orderInfo->status=='1'){
+            $data=[
+                'code'=>1
+            ];
+            echo json_encode($data);
+        }else{
+            $data=[
+                'code'=>2
+            ];
+            echo json_encode($data);
+        }
     }
 
 }
