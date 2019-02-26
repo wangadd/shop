@@ -31,7 +31,8 @@
     <br/>
 
     @if($orderInfo->order_status==1)
-        <button class="btn btn-danger"><a href="/pay/test/{{$order_num}}" style="text-decoration: none; color: #ffffff;">去付款</a></button>
+        <button class="btn btn-danger"><a href="/pay/test/{{$order_num}}" style="text-decoration: none; color: #ffffff;">支付宝支付</a></button>
+        <button class="btn btn-danger"><a href="/weixin/pay/test/{{$order_num}}" style="text-decoration: none; color: #ffffff;">微信支付</a></button>
         <button class="btn btn-danger"><a href="/orderlist" style="text-decoration: none; color: #ffffff;">全部订单</a></button>
         <button class="btn btn-danger"><a href="/goods" style="text-decoration: none; color: #ffffff;">继续购买商品</a></button>
         <button class="btn btn-danger"><a href="/orderdel/{{$order_num}}" style="text-decoration: none; color: #ffffff;">取消订单</a></button>

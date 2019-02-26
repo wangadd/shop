@@ -434,32 +434,11 @@ class WxController extends Controller
             echo "发送失败,错误代码".$request_arr['errcode'].",错误信息".$request_arr['errmsg'];
         }
     }
-    /**
-     * 获取回复消息
-     */
-//    public function huifu(Request $request){
-//        //获取用户回复消息
-//        $data = file_get_contents("php://input");
-//        $log_str = date('Y-m-d H:i:s') . "\n" . $data . "\n<<<<<<<";
-//        file_put_contents('logs/wx_event.log',$log_str,FILE_APPEND);
-//        //解析XML
-//        $xml = simplexml_load_string($data);        //将 xml字符串 转换成对象
-//        $event = $xml->Event;                       //事件类型
-//        $openids = $xml->FromUserName;               //用户openid
-//        $msg=$xml->Content;
-//        $yhInfo=[
-//            'openid'=>$openids,
-//            'senduser'=>$openids,
-//            'text'=>$msg,
-//            'add_time'=>time(),
-//        ];
-//        $rs=WxTextModel::InsertGetId($yhInfo);
-//
-//
-//    }
+
     public function getMsg(Request $request){
         $openid=$request->input('openid');
         $msg=WxTextModel::orderBy('add_time','asc')->where('openid',$openid)->get();
         echo json_encode($msg);
     }
+
 }

@@ -57,19 +57,21 @@ class Cart extends Controller
         $buy_num=$request->input('goods_num');
         $uid=Auth::id();
         $token=$request->session()->get('u_token');
-
         $where=[
             'goods_id'=>$goods_id,
             'uid'=>$uid
         ];
+        //根据goods_id,uid,查询购物车表
         $arr=CartModel::where($where)->first();
         if(!empty($arr)){
+            //之前已经添加过   做累加
             $num=$arr->num;
             $updateinfo=[
                 'num'=>$num+$buy_num
             ];
             $id=CartModel::where($where)->update($updateinfo);
         }else{
+            //  直接添加
             $data=[
                 'goods_id'=>$goods_id,
                 'num'=>$buy_num,
