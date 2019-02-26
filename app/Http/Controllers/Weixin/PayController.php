@@ -208,7 +208,7 @@ class PayController extends Controller
             'order_num'=>$order_num
         ];
         $orderInfo=OrderModel::where($where)->first();
-        if($orderInfo->status=='1'){
+        if($orderInfo->status=='2'){
             $data=[
                 'code'=>1
             ];
