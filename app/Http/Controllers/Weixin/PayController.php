@@ -203,6 +203,7 @@ class PayController extends Controller
 
     public function find(Request $request){
         $order_num=$request->input('order_num');
+        $order_num=substr($order_num,1);
         $where=[
             'order_num'=>$order_num
         ];
