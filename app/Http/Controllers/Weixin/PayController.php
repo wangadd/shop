@@ -43,7 +43,7 @@ class PayController extends Controller
         $data =  simplexml_load_string($res);
         $code_url=$data->code_url;
         //将code_url传给前端控制器生成二维码
-        return view('weixin.qrcode',['code_url'=>$code_url,['order_num'=>$order_num]]);
+        return view('weixin.qrcode',['code_url'=>$code_url,'order_num'=>$order_num]);
 
     }
 
