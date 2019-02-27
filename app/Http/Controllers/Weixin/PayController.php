@@ -163,6 +163,10 @@ class PayController extends Controller
                 ];
                 //修改订单详情表
                 $detailInfo=DetailModel::where($where)->get();
+                if(empty($detailInfo)){
+                    $log_str .= " Detail Failed!<<<<< \n\n";
+                    file_put_contents('logs/Wxpay.log',$log_str,FILE_APPEND);
+                }
                 foreach ($detailInfo as $k=>$v){
                     $detail=[
                         'status'=>2
@@ -176,10 +180,16 @@ class PayController extends Controller
                     'pay_time'=>time()
                 ];
                 $res=OrderModel::where($where)->update($orderData);
+                if(!$res){
+                    $log_str .= " Detail Failed!<<<<< \n\n";
+                    file_put_contents('logs/Wxpay.log',$log_str,FILE_APPEND);
+                }
             }else{
                 //TODO 验签失败
                 echo '验签失败，IP: '.$_SERVER['REMOTE_ADDR'];
                 // TODO 记录日志
+                $log_str .= " Sign Failed!<<<<< \n\n";
+                file_put_contents('logs/Wxpay.log',$log_str,FILE_APPEND);
             }
 
         }
