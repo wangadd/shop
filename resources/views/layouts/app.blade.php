@@ -46,9 +46,7 @@
                             <li><a href="{{ route('login') }}">Login</a></li>
                             <li><a href="{{ route('register') }}">Register</a></li>
                             <li>
-                                <a href="https://open.weixin.qq.com/connect/qrconnect?appid=wxe24f70961302b5a5&redirect_uri=http%3A%2F%2Fmall.77sc.com.cn%2Fweixin.php&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect">
-                                        微信登录
-                                </a>
+                                <a href="https://open.weixin.qq.com/connect/qrconnect?appid=wxe24f70961302b5a5&amp;redirect_uri=http%3a%2f%2fmall.77sc.com.cn%2fweixin.php%3fr1%3dking.tactshan.com%2fweixin%2fgetcode&amp;response_type=code&amp;scope=snsapi_login&amp;state=STATE#wechat_redirect">微信登录</a>
                             </li>
                         @else
                             <li class="dropdown">
