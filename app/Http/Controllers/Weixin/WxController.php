@@ -440,5 +440,9 @@ class WxController extends Controller
         $msg=WxTextModel::orderBy('add_time','asc')->where('openid',$openid)->get();
         echo json_encode($msg);
     }
+    public function test(){
+        $url=urlencode('http:shop.test.com/wxlogin');
+        echo $url;
+    }
 
 }

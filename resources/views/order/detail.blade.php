@@ -1,4 +1,4 @@
-@extends('layouts.bootstrap')
+@extends('layouts.app')
 
 @section('content')
     <h1>订单号: <font color="red">{{$order_num}}</font></h1>

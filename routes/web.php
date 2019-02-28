@@ -126,6 +126,11 @@ Route::post('/weixin/pay/find','Weixin\PayController@find');
 
 
 
+//微信登录
+Route::get('/weixin/getcode','Weixin\PayController@getCode');
+
+
+
 
 
 

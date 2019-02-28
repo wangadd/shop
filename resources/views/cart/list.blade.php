@@ -1,4 +1,4 @@
-@extends('layouts.bootstrap')
+@extends('layouts.app')
 
 @section('content')
     <h1>UID: <font color="red">{{$uid}}</font>欢迎回来</h1>

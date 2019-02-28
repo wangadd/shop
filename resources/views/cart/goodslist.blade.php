@@ -1,4 +1,4 @@
-@extends('layouts.bootstrap')
+@extends('layouts.app')
 
 @section('content')
     <h1>欢迎回来</h1>

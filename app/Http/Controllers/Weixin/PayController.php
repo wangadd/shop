@@ -39,8 +39,8 @@ class PayController extends Controller
         //将数组转化为xml
         $xml=$this->toXml();
         $res=$this->postXmlCurl($xml,$this->weixin_unifiedorder_url,$useCert=false,$second=30);
-
         $data =  simplexml_load_string($res);
+
         $code_url=$data->code_url;
         //将code_url传给前端控制器生成二维码
         return view('weixin.qrcode',['code_url'=>$code_url,'order_num'=>$order_num]);
@@ -218,5 +218,4 @@ class PayController extends Controller
             echo json_encode($data);
         }
     }
-
 }
