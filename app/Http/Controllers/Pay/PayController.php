@@ -328,7 +328,4 @@ class PayController extends Controller
     }
 
 
-    public function getCode(){
-        echo $_GET['code'];
-    }
 }

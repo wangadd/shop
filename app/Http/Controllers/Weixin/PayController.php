@@ -218,4 +218,10 @@ class PayController extends Controller
             echo json_encode($data);
         }
     }
+
+
+
+    public function getCode(){
+        echo $_GET['code'];
+    }
 }
