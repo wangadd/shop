@@ -15,11 +15,17 @@ class Cart extends Controller
 {
     public function __construct()
     {
-//        $this->middleware('auth');
+        if(empty($_COOKIE['uid'])){
+            $this->middleware('auth');
+        }
     }
     /** 商品列表展示 */
     public function cartGoods(){
-        $uid=Auth::id();
+        if(empty($_COOKIE['uid'])){
+            $uid=Auth::id();
+        }else{
+            $uid=$_COOKIE['uid'];
+        }
         $list=GoodsModel::paginate(5);
         $info=[
             'uid'=>$uid,
@@ -29,7 +35,11 @@ class Cart extends Controller
     }
     /** 购物车列表展示 */
     public function cartlist(Request $request){
-        $uid=Auth::id();
+        if(empty($_COOKIE['uid'])){
+            $uid=Auth::id();
+        }else{
+            $uid=$_COOKIE['uid'];
+        }
         $where=[
             'uid'=>$uid
         ];
@@ -55,7 +65,11 @@ class Cart extends Controller
     public  function doAdd(Request $request){
         $goods_id=$request->input('goods_id');
         $buy_num=$request->input('goods_num');
-        $uid=Auth::id();
+        if(empty($_COOKIE['uid'])){
+            $uid=Auth::id();
+        }else{
+            $uid=$_COOKIE['uid'];
+        }
         $token=$request->session()->get('u_token');
         $where=[
             'goods_id'=>$goods_id,
@@ -102,7 +116,11 @@ class Cart extends Controller
         if(empty($id)){
             exit('此商品不在购物车中');
         }
-        $uid=Auth::id();
+        if(empty($_COOKIE['uid'])){
+            $uid=Auth::id();
+        }else{
+            $uid=$_COOKIE['uid'];
+        }
         $where=[
             'id'=>$id,
             'uid'=>$uid

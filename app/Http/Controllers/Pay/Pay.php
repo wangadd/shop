@@ -12,11 +12,18 @@ class Pay extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        if(empty($_COOKIE['uid'])){
+            $this->middleware('auth');
+        }
+
     }
     /** 调用支付包接口 */
     public function orderPay(Request $request,$order_num){
-
+        if(empty($_COOKIE['uid'])){
+            $uid=Auth::id();
+        }else{
+            $uid=$_COOKIE['uid'];
+        }
         echo "支付成功";
 
         $where=[
@@ -28,7 +35,7 @@ class Pay extends Controller
         $orderInfo=OrderModel::where($where)->first();
         $amount=$orderInfo->order_amount;
         $userWhere=[
-            'id'=>Auth::id(),
+            'id'=>$uid,
         ];
         $userInfo=UserModel::where($userWhere)->first();
         $userDate=[

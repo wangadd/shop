@@ -24,7 +24,9 @@ class PayController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
+        if(empty($_COOKIE['uid'])){
+            $this->middleware('auth');
+        }
     }
     /**
      * 请求订单服务 处理订单逻辑

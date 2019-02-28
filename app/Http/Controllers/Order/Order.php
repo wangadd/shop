@@ -14,11 +14,18 @@ class Order extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        if(empty($_COOKIE['uid'])){
+            $this->middleware('auth');
+        }
+
     }
    /** 订单展示 */
    public function orderList(Request $request){
-       $uid=Auth::id();
+       if(empty($_COOKIE['uid'])){
+           $uid=Auth::id();
+       }else{
+           $uid=$_COOKIE['uid'];
+       }
        $where=[
            'uid'=>$uid,
        ];
@@ -31,7 +38,13 @@ class Order extends Controller
    }
    /** 生成订单 */
    public function reorder(Request $request){
-       $uid=Auth::id();
+       if(empty($_COOKIE['uid'])){
+           $uid=Auth::id();
+       }else{
+           $uid=$_COOKIE['uid'];
+       }
+
+
        if(empty($uid)){
            exit('请选择要购买的商品');
        }
@@ -67,26 +80,32 @@ class Order extends Controller
                'goods_stock'=>$v->goods_stock-$v->buy_number
            ];
            $res=GoodsModel::where($goodsWhere)->update($goodsUpdate);
+
            $arr=[
                'order_num'=>$order_sn,
                'goods_id'=>$v->goods_id,
                'goods_name'=>$v->goods_name,
                'goods_price'=>$v->goods_price,
                'buy_number'=>$v->buy_number,
-               'uid'=>Auth::id()
+               'uid'=>$uid
            ];
            $result=DetailModel::insert($arr);
        }
        $data=[
            'order_num'      => $order_sn,
-           'uid'           =>Auth::id(),
+           'uid'           =>$uid,
            'add_time'      => time(),
            'order_amount'  => $order_amount
        ];
        $oid = OrderModel::insertGetId($data);
        if($oid){
+           if(empty($_COOKIE['uid'])){
+               $uid=Auth::id();
+           }else{
+               $uid=$_COOKIE['uid'];
+           }
            //清空购物车
-           CartModel::where(['uid'=>Auth::id()])->delete();
+           CartModel::where(['uid'=>$uid])->delete();
            echo "下单成功";
            header("refresh:2;url=/orderlist");
        }else{
@@ -95,9 +114,14 @@ class Order extends Controller
    }
    /** 订单详情页 */
    public function orderDetail(Request $request,$order_num){
+       if(empty($_COOKIE['uid'])){
+           $uid=Auth::id();
+       }else{
+           $uid=$_COOKIE['uid'];
+       }
         $where=[
             'order_num'=>$order_num,
-            'uid'=>Auth::id()
+            'uid'=>$uid
         ];
         $orderInfo=OrderModel::where($where)->first();
         $info=DetailModel::where($where)->get();
@@ -113,7 +137,11 @@ class Order extends Controller
         if(empty($order_num)){
             exit('请选择要取消的订单');
         }
-        $uid=Auth::id();
+        if(empty($_COOKIE['uid'])){
+           $uid=Auth::id();
+       }else{
+           $uid=$_COOKIE['uid'];
+       }
         //把订单状态改为取消
         $orderwhere=[
             'order_num'=>$order_num,
@@ -150,7 +178,11 @@ class Order extends Controller
    /** 恢复订单 */
    public function recoveOrder(Request $request,$order_num){
        //修改订单状态
-       $uid=Auth::id();
+       if(empty($_COOKIE['uid'])){
+           $uid=Auth::id();
+       }else{
+           $uid=$_COOKIE['uid'];
+       }
        $orderwhere=[
            'order_num'=>$order_num,
            'uid'=>$uid

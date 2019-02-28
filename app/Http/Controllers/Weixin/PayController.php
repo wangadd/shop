@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Weixin;
 
 use App\Model\DetailModel;
 use App\Model\OrderModel;
+use App\Model\UserModel;
+use App\Model\WxuserModel;
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -219,22 +222,67 @@ class PayController extends Controller
         }
     }
 
-    public function getCode(){
-        $code=$_GET['code'];
-        $token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxe24f70961302b5a5&secret=0f121743ff20a3a454e4a12aeecef4be&code='.$code.'&grant_type=authorization_code';
-        $token_json = file_get_contents($token_url);
+    public function getCode(Request $request){
+//        $code=$_GET['code'];
+//        $token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxe24f70961302b5a5&secret=0f121743ff20a3a454e4a12aeecef4be&code='.$code.'&grant_type=authorization_code';
+//        $token_json = file_get_contents($token_url);
+//
+//        $token_arr = json_decode($token_json,true);
+//
+//        $access_token = $token_arr['access_token'];
+//        $openid = $token_arr['openid'];
+//
+//        // 3 携带token  获取用户信息
+//        $user_info_url = 'https://api.weixin.qq.com/sns/userinfo?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
+//        $user_json = file_get_contents($user_info_url);
+//
+//        $user_arr = json_decode($user_json,true);
+        $user_arr=[
+            'openid' => 'oOc9s1R7W6FCPQc2rZ5TLH9n0ENU',
+            'nickname' => '光芒',
+            'sex' => 1,
+            'language' => 'zh_CN',
+            'city' => '运城',
+            'province]' => '山西',
+            'country' => '中国',
+            'headimgurl' => 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTKuiaGiczGMvicRRXoGfa70M15xUAPQLEOUXZm8s9jBC3ibamxzfl16eiaVAVm9TGqjiatSfR2H5T0SKwCQ/132',
+            'privilege' =>Array
+                (
+                ),
 
-        $token_arr = json_decode($token_json,true);
-
-        $access_token = $token_arr['access_token'];
-        $openid = $token_arr['openid'];
-
-        // 3 携带token  获取用户信息
-        $user_info_url = 'https://api.weixin.qq.com/sns/userinfo?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
-        $user_json = file_get_contents($user_info_url);
-
-        $user_arr = json_decode($user_json,true);
-        echo '<hr>';
-        echo '<pre>';print_r($user_arr);echo '</pre>';
+            'unionid' => 'oTm241W6giJGNRTlIxQRHQR6tgms'
+    ];
+        $where=[
+            'unionid'=>$user_arr['unionid']
+        ];
+        $userInfo=WxuserModel::where($where)->first();
+        if(empty($userInfo)){
+            //添加入库
+            //添加users表
+            $user_data=[
+                'name'=>'wx_'.str_random(5)
+            ];
+            $uid=UserModel::insertGetId($user_data);
+            //添加wx_user表
+            $info=[
+                'openid'=>$user_arr['openid'],
+                'nickname'=>$user_arr['nickname'],
+                'sex'=>$user_arr['sex'],
+                'headimgurl'=>$user_arr['headimgurl'],
+                'subscribe_time'=>time(),
+                'add_time'=>time(),
+                'unionid'=>$user_arr['unionid'],
+                'uid'=>$uid
+            ];
+            $id=WxuserModel::insertGetId($info);
+            setcookie('uid',$uid,time()+60*60*24,'/','',false,true);
+            setcookie('nickname',$user_arr['nickname'],time()+60*60*24,'/','',false,true);
+            echo "<h1 font-color='red'>首次登录</h1>";
+        }else{
+            //登录逻辑
+            setcookie('uid',$userInfo['uid'],time()+60*60*24,'/','',false,true);
+            setcookie('nickname',$userInfo['nickname'],time()+60*60*24,'/','',false,true);
+            echo "<pre><h1 font-color='red'>欢迎回来<h1></pre>";
+        }
     }
 }
