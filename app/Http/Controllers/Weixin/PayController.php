@@ -223,35 +223,20 @@ class PayController extends Controller
     }
 
     public function getCode(Request $request){
-//        $code=$_GET['code'];
-//        $token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxe24f70961302b5a5&secret=0f121743ff20a3a454e4a12aeecef4be&code='.$code.'&grant_type=authorization_code';
-//        $token_json = file_get_contents($token_url);
-//
-//        $token_arr = json_decode($token_json,true);
-//
-//        $access_token = $token_arr['access_token'];
-//        $openid = $token_arr['openid'];
-//
-//        // 3 携带token  获取用户信息
-//        $user_info_url = 'https://api.weixin.qq.com/sns/userinfo?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
-//        $user_json = file_get_contents($user_info_url);
-//
-//        $user_arr = json_decode($user_json,true);
-        $user_arr=[
-            'openid' => 'oOc9s1R7W6FCPQc2rZ5TLH9n0ENU',
-            'nickname' => '光芒',
-            'sex' => 1,
-            'language' => 'zh_CN',
-            'city' => '运城',
-            'province]' => '山西',
-            'country' => '中国',
-            'headimgurl' => 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTKuiaGiczGMvicRRXoGfa70M15xUAPQLEOUXZm8s9jBC3ibamxzfl16eiaVAVm9TGqjiatSfR2H5T0SKwCQ/132',
-            'privilege' =>Array
-                (
-                ),
+        $code=$_GET['code'];
+        $token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxe24f70961302b5a5&secret=0f121743ff20a3a454e4a12aeecef4be&code='.$code.'&grant_type=authorization_code';
+        $token_json = file_get_contents($token_url);
 
-            'unionid' => 'oTm241W6giJGNRTlIxQRHQR6tgms'
-    ];
+        $token_arr = json_decode($token_json,true);
+
+        $access_token = $token_arr['access_token'];
+        $openid = $token_arr['openid'];
+
+        // 3 携带token  获取用户信息
+        $user_info_url = 'https://api.weixin.qq.com/sns/userinfo?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
+        $user_json = file_get_contents($user_info_url);
+
+        $user_arr = json_decode($user_json,true);
         $where=[
             'unionid'=>$user_arr['unionid']
         ];
