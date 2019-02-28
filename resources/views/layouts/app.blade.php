@@ -47,16 +47,9 @@
                             <li><a href="{{ route('register') }}">Register</a></li>
                         @else
                             <li class="dropdown">
-                                @if($_COOKIE !='')
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" v-pre>
-                                        {{ $_COOKIE['nickname'] }} <span class="caret"></span>
-                                    </a>
-                                @else
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" v-pre>
-                                        {{ Auth::user()->name }} <span class="caret"></span>
-                                    </a>
-                                @endif
-
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" v-pre>
+                                    {{ Auth::user()->name }} <span class="caret"></span>
+                                </a>
 
                                 <ul class="dropdown-menu">
                                     <li>
