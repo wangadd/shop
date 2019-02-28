@@ -267,7 +267,7 @@ class PayController extends Controller
             //登录逻辑
             setcookie('uid',$userInfo['uid'],time()+60*60*24,'/','',false,true);
             setcookie('nickname',$userInfo['nickname'],time()+60*60*24,'/','',false,true);
-            echo "<pre><h1 font-color='red'>欢迎回来<h1><a href='/goods'>进入商品页面</a></pre>";
+            echo "<h1 font-color='red'>欢迎回来<h1><a href='/goods'>进入商品页面</a>";
         }
     }
 }
