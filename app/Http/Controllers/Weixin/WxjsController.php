@@ -49,7 +49,6 @@ class WxjsController extends Controller
         if(!$token){        // 无缓存 请求微信接口
             $url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.env('WEIXIN_APPID_1').'&secret='.env('WEIXIN_APPSECRET_JSSDK');
             $data = json_decode(file_get_contents($url),true);
-            print_r($data);die;
             //记录缓存
             $token = $data['access_token'];
             Redis::set($this->redis_weixin_access_token,$token);
