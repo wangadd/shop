@@ -30,7 +30,7 @@ class WxjsController extends Controller
         $url='https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token='.$access_token.'&type=jsapi';
         $data = json_decode(file_get_contents($url),true);
         $ticket=$data['ticket'];
-        $current_url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        $current_url = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         //对所有待签名参数按照字段名的ASCII 码从小到大排序（字典序）后，使用URL键值对的格式（即key1=value1&key2=value2…）拼接成字符串string1
         $str =  'jsapi_ticket='.$ticket.'&noncestr='.$info['nonceStr']. '&timestamp='. $info['timestamp']. '&url='.$current_url;
 
