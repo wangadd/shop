@@ -2,6 +2,7 @@
 
 @section('content')
     <h1>jssdk</h1>
+    <button id="btn1">选择照片</button>
 @endsection
 @section('footer')
     @parent
@@ -12,7 +13,7 @@
             appId: "{{$data['appid']}}", // 必填，公众号的唯一标识
             timestamp: "{{$data['timestamp']}}", // 必填，生成签名的时间戳
             nonceStr: "{{$data['nonceStr']}}", // 必填，生成签名的随机串
-            signature:"{{$data['signature']}}",// 必填，签名
+            signature:"{{$data['sign']}}",// 必填，签名
             jsApiList: ['chooseImage','uploadImage','getLocalImgData','startRecord'] // 必填，需要使用的JS接口列表
         });
 
