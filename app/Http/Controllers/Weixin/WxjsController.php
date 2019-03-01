@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Redis;
 class WxjsController extends Controller
 {
     protected $redis_weixin_access_token = 'str:weixin_access_token_jssdk';
+    protected $redis_weixin_ticket = 'str:weixin_ticket_jssdk';
     public function test(){
         //计算签名
 
@@ -27,9 +28,9 @@ class WxjsController extends Controller
     }
     public function getSign($info){
         $access_token=$this->getWXAccessToken();
-        $url='https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token='.$access_token.'&type=jsapi';
-        $data = json_decode(file_get_contents($url),true);
-        $ticket=$data['ticket'];
+
+
+        $ticket=$this->getTicket($access_token);
         $current_url = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         //对所有待签名参数按照字段名的ASCII 码从小到大排序（字典序）后，使用URL键值对的格式（即key1=value1&key2=value2…）拼接成字符串string1
         $str =  'jsapi_ticket='.$ticket.'&noncestr='.$info['nonceStr']. '&timestamp='. $info['timestamp']. '&url='.$current_url;
@@ -37,6 +38,19 @@ class WxjsController extends Controller
         //对$str进行sha1签名，得到signature：
         $sign=sha1($str);
         return $sign;
+    }
+    public function getTicket($access_token){
+        //获取缓存
+        $ticket = Redis::get($this->redis_weixin_ticket);
+        if(!$ticket){        // 无缓存 请求微信接口
+            $url='https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token='.$access_token.'&type=jsapi';
+            $data = json_decode(file_get_contents($url),true);
+            //记录缓存
+            $ticket = $data['ticket'];
+            Redis::set($this->redis_weixin_ticket,$ticket);
+            Redis::setTimeout($this->redis_weixin_ticket,3600);
+        }
+        return $ticket;
     }
     /**
      * 获取微信AccessToken
