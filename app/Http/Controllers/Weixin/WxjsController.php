@@ -19,7 +19,7 @@ class WxjsController extends Controller
             'nonceStr' => str_random(10), // 必填，生成签名的随机串
         ];
         $sign=$this->getSign($data);
-        $jsconfig['sign'] = $sign;
+        $data['sign'] = $sign;
         $info=[
             'data'=>$data
         ];
