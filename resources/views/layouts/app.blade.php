@@ -79,5 +79,6 @@
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('/js/jquery-3.2.1.min.js')}}"></script>
     <script src="{{URL::asset('js/qrcode.js')}}"></script>
+    <script src="https://res2.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
 </body>
 </html>
