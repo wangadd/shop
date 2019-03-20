@@ -173,6 +173,7 @@ class UserController extends Controller
 
     public function reg1(){
         $data=$_POST;
+        print_r($data);die;
         $info=[
             'name'=>$data['name'],
             'email'=>$data['email'],
