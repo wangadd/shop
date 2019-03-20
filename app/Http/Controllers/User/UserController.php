@@ -174,7 +174,7 @@ class UserController extends Controller
     public function reg1(){
         $data=$_POST;
         $new_pwd=md5($data['pwd']);
-        $data['pwd']=$new_pwd;
+        $data['password']=$new_pwd;
         $id=UserModel::insertGetId($data);
         if($id){
             echo "注册成功";
