@@ -58,6 +58,7 @@ Route::get('/userreg','User\UserController@reg');
 
 Route::post('/userreg','User\UserController@doReg');
 Route::post('/reg','User\UserController@reg1');
+Route::post('/login','User\UserController@doLogin');
 //列表展示
 Route::get('/userlist','User\UserController@usershow');
 //登录

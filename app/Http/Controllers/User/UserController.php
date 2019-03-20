@@ -173,7 +173,12 @@ class UserController extends Controller
 
     public function reg1(){
         $data=$_POST;
-        $id=UserModel::insertGetId($data);
+        $info=[
+            'name'=>$data['name'],
+            'email'=>$data['email'],
+            'password'=>md5($data['password'])
+        ];
+        $id=UserModel::insertGetId($info);
         if($id){
             echo "注册成功";
         }else{
@@ -181,13 +186,14 @@ class UserController extends Controller
         }
     }
 
-    public function login1(){
+    public function doLogin(){
         $email=$_POST['email'];
+        $password=md5($_POST['password']);
         $where=[
             'email'=>$email
         ];
         $info=UserModel::where($where)->first();
-        if(!empty($info)){
+        if($password==$info['password']){
             echo "登录成功";
         }else{
             echo "登录失败";
