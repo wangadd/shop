@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 
 use App\Model\UserModel;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
 
 class UserController extends Controller
 {
@@ -197,32 +198,42 @@ class UserController extends Controller
         ];
         $info=UserModel::where($where)->first();
         if($password==$info['password']){
-            echo "登录成功";
+
             $token=substr(time().rand(0,99999),10,10);
-            setcookie('uid',$info['id'],time()+60*60*24,'/','',false,true);
-            setcookie('token',$token,time()+86400,'/','',false,true);
-            $request->session()->put('u_token',$token);
-            $request->session()->put('uid',$info['id']);
-            header("refresh:2;url='/userinfo'");
+            $key='userinfo';
+            $data=[
+                'id'=>$info['id'],
+                'token'=>$token
+            ];
+            $key="token".':'.$info['id'];
+            Redis::hSet($key,'token',$token);
+            Redis::expire($key,3600*24*7);
+            $info=[
+                'msg'=>"登录成功",
+                'id'=>$info['id'],
+                'token'=>$token
+            ];
+            echo json_encode($info);
         }else{
             echo "登录失败";
         }
 
     }
 
-    public function userinfo(Request $request){
-        if(empty($_COOKIE['uid'])){
-            echo "您还没有登录，正在为您跳转至登陆页面";
-            header("refresh:2;url=/userlogin");
-            exit;
+    public function userinfo(){
+        $uid=$_GET['id'];
+        $key="token".$uid;
+        $token=Redis::hget($key,'token');
+        $data=Redis::hGet($key,'token');
+        if($_SERVER['HTTP_TOKEN']==$token){
+            $userInfo=UserModel::all();
+            $info=[
+                'code'=>0,
+                'msg'=>'ok',
+                'data'=>$userInfo,
+            ];
+            echo json_encode($info);
         }
-        if($_COOKIE['token'] != $request->session()->get('u_token')) {
-            echo "您还没有登录，正在为您跳转至登陆页面";
-            header("refresh:2;url=/userlogin");
-            exit;
-        }
-        $userInfo=UserModel::all();
-        print_r($userInfo);
     }
 }
 
