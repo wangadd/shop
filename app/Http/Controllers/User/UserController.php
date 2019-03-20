@@ -190,7 +190,6 @@ class UserController extends Controller
     }
 
     public function doLogin(){
-        print_r($_POST);die;
         $email=$_POST['email'];
         $password=md5($_POST['password']);
         $where=[
