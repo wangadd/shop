@@ -189,7 +189,7 @@ class UserController extends Controller
         }
     }
 
-    public function doLogin(){
+    public function doLogin(Request $request){
         $email=$_POST['email'];
         $password=md5($_POST['password']);
         $where=[
@@ -198,9 +198,30 @@ class UserController extends Controller
         $info=UserModel::where($where)->first();
         if($password==$info['password']){
             echo "登录成功";
+            $token=substr(time().rand(0,99999),10,10);
+            setcookie('uid',$info['id'],time()+60*60*24,'/','',false,true);
+            setcookie('token',$token,time()+86400,'/','',false,true);
+            $request->session()->put('u_token',$token);
+            $request->session()->put('uid',$info['id']);
+            header("refresh:2;url='/userinfo'");
         }else{
             echo "登录失败";
         }
+
+    }
+
+    public function userlist(Request $request){
+        if(empty($_COOKIE['uid'])){
+            echo "您还没有登录，正在为您跳转至登陆页面";
+            header("refresh:2;url=/userlogin");
+            exit;
+        }
+        if($_COOKIE['token'] != $request->session()->get('u_token')){
+            echo "您还没有登录，正在为您跳转至登陆页面";
+            header("refresh:2;url=/userlogin");
+            exit;
+        }
+        $userInfo=UserModel::all();
 
     }
 }
