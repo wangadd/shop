@@ -210,7 +210,7 @@ class UserController extends Controller
 
     }
 
-    public function userlist(Request $request){
+    public function userinfo(Request $request){
         if(empty($_COOKIE['uid'])){
             echo "您还没有登录，正在为您跳转至登陆页面";
             header("refresh:2;url=/userlogin");
