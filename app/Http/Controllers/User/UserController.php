@@ -173,12 +173,27 @@ class UserController extends Controller
 
     public function reg1(){
         $data=$_POST;
+        $data['pwd']=md5($data['pwd']);
         $id=UserModel::insertGetId($data);
         if($id){
             echo "注册成功";
         }else{
             echo "注册失败";
         }
+    }
+
+    public function login1(){
+        $email=$_POST['email'];
+        $where=[
+            'email'=>$email
+        ];
+        $info=UserModel::where($where)->first();
+        if(!empty($info)){
+            echo "登录成功";
+        }else{
+            echo "登录失败";
+        }
+
     }
 }
 
