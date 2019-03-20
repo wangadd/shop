@@ -173,7 +173,9 @@ class UserController extends Controller
 
     public function reg1(){
         $data=$_POST;
-        print_r($data);die;
+        if($data['password']!=$data['re_pwd']){
+            echo "pwd && repwd not same";
+        }
         $info=[
             'name'=>$data['name'],
             'email'=>$data['email'],
