@@ -55,8 +55,9 @@ Route::get('/view/index','User\UserController@viewTest2');
 
 //用户注册
 Route::get('/userreg','User\UserController@reg');
-Route::post('/userreg','User\UserController@doReg');
 
+Route::post('/userreg','User\UserController@doReg');
+Route::post('/reg','User\UserController@reg1');
 //列表展示
 Route::get('/userlist','User\UserController@usershow');
 //登录
@@ -131,6 +132,13 @@ Route::get('/weixin/getcode','Weixin\PayController@getCode');
 
 //jssdk
 Route::get('/weixin/jssdk','Weixin\WxjsController@test');
+Route::any('/curl','Weixin\WxjsController@test1');
+
+
+
+//加密、解密 测试
+Route::any('/test/sign','Test\TestController@sign');
+Route::any('/test/sign1','Test\TestController@sign1');
 
 
 

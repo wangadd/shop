@@ -169,5 +169,16 @@ class UserController extends Controller
         setcookie('uid','',time()-1);
         header("refresh:0;url=/userlogin");
     }
+
+
+    public function reg1(){
+        $data=$_POST;
+        $id=UserModel::insertGetId($data);
+        if($id){
+            echo "注册成功";
+        }else{
+            echo "注册失败";
+        }
+    }
 }
 

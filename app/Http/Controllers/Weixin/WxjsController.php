@@ -26,10 +26,16 @@ class WxjsController extends Controller
         ];
         return view('weixin.jssdk',$info);
     }
+
+    /**
+     * 计算签名
+     * @param $info
+     * @return string
+     */
     public function getSign($info){
+        //获取微信access_token
         $access_token=$this->getWXAccessToken();
-
-
+        //获取ticket
         $ticket=$this->getTicket($access_token);
         $current_url = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         //对所有待签名参数按照字段名的ASCII 码从小到大排序（字典序）后，使用URL键值对的格式（即key1=value1&key2=value2…）拼接成字符串string1
@@ -39,6 +45,12 @@ class WxjsController extends Controller
         $sign=sha1($str);
         return $sign;
     }
+
+    /**
+     * 获取ticket
+     * @param $access_token
+     * @return mixed
+     */
     public function getTicket($access_token){
         //获取缓存
         $ticket = Redis::get($this->redis_weixin_ticket);
@@ -70,5 +82,13 @@ class WxjsController extends Controller
         }
         return $token;
 
+    }
+
+
+
+
+    public function test1(){
+        //echo 111;
+       echo $_POST['html'];
     }
 }

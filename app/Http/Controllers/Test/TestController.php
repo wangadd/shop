@@ -10,109 +10,48 @@ use App\Http\Controllers\Controller;
 use DB;
 class TestController extends Controller
 {
-    //
-
-    public function abc()
+    public $rsaPrivateKeyFilePath = './key/vm_priv.key';
+    public $aliPubKey = './key/vm_pub.key';
+    public function sign()
     {
-        var_dump($_POST);echo '</br>';
-        var_dump($_GET);echo '</br>';
-    }
+        $now=time();
+        $url = "http://lara.api.com/user/sign?time=".$now;
 
-	public function world1()
-	{
-		echo __METHOD__;
-	}
+        $str = "hello php";
+        $key = "wang";
+        $salt="xxxxx";
+        $iv = substr(md5($now.$salt),5,16);        //固定16位          //8c8bcb75ea5062a8
+        $ch = curl_init();
+        //加密
+        $enc_str = openssl_encrypt($str, "AES-128-CBC", $key, OPENSSL_RAW_DATA, $iv);
+        $post_info=base64_encode($enc_str);
 
-
-	public function hello2()
-	{
-		echo __METHOD__;
-		header('Location:/world2');
-	}
-
-	public function world2()
-	{
-		header('Location:http://www.baidu.com');
-	}
-
-	public function md($m,$d)
-	{
-		echo 'm: '.$m;echo '<br>';
-		echo 'd: '.$d;echo '<br>';
-	}
-
-	public function showName($name=null)
-	{
-		var_dump($name);
-	}
-
-	public function query1()
-	{
-		$list = DB::table('p_users')->get()->toArray();
-		echo '<pre>';print_r($list);echo '</pre>';
-	}
-
-	public function query2()
-	{
-		$user = DB::table('p_users')->where('uid', 3)->first();
-		echo '<pre>';print_r($user);echo '</pre>';echo '<hr>';
-		$email = DB::table('p_users')->where('uid', 4)->value('email');
-		var_dump($email);echo '<hr>';
-		$info = DB::table('p_users')->pluck('age', 'name')->toArray();
-		echo '<pre>';print_r($info);echo '</pre>';
-
-
-	}
-
-
-	public function viewTest1()
-    {
-        $data = [];
-        return view('test.index',$data);
-    }
-
-    public function viewTest2()
-    {
-        $list = UserModel::all()->toArray();
-        //echo '<pre>';print_r($list);echo '</pre>';
-
-        $data = [
-            'title'     => 'XXXX',
-            'list'      => $list
+        //设置签名
+        $priv_key=file_get_contents($this->rsaPrivateKeyFilePath);
+        $res = openssl_get_privatekey($priv_key);
+        $rs=openssl_sign($post_info, $sign, $res, OPENSSL_ALGO_SHA256);
+        $sign = base64_encode($sign);
+        $info=[
+            'str'=>$post_info,
+            'sign'=>$sign,
         ];
+        //向服务器发送数据
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 0);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $info);
 
-        return view('test.child',$data);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch,CURLOPT_HEADER,0);
+        $result=curl_exec($ch);
+        $response=json_decode($result);
+        $time=$response->t;
+        $response_str=$response->str;
+        $client_str=base64_decode($response_str);
+        $new_iv=substr(md5($time.$salt),5,16);
+        $last_str = openssl_decrypt($client_str, "AES-128-CBC", $key, OPENSSL_RAW_DATA, $new_iv);
+        echo $last_str;
+        curl_close($ch);
     }
 
-    /**
-     * Cookie 测试
-     * 2019年1月4日13:25:50
-     */
-    public function cookieTest1()
-    {
-        setcookie('cookie1','lening',time()+1200,'/','lening.com',false,true);
-        echo '<pre>';print_r($_COOKIE);echo '</pre>';
-    }
 
-    public function cookieTest2()
-    {
-        echo '<pre>';print_r($_COOKIE);echo '</pre>';
-    }
-
-    public function sessionTest(Request $request)
-    {
-        $request->session()->put('aaa','aaaaaa');
-        echo '<pre>';print_r($request->session()->all());echo '</pre>';
-        //echo '<pre>';print_r(Session::all());echo '</pre>';
-    }
-
-    public function mid1()
-    {
-        echo __METHOD__;
-    }
-
-    public function checkCookie()
-    {
-        echo __METHOD__;
-    }
 }
