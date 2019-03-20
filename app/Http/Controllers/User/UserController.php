@@ -216,13 +216,13 @@ class UserController extends Controller
             header("refresh:2;url=/userlogin");
             exit;
         }
-        if($_COOKIE['token'] != $request->session()->get('u_token')){
+        if($_COOKIE['token'] != $request->session()->get('u_token')) {
             echo "您还没有登录，正在为您跳转至登陆页面";
             header("refresh:2;url=/userlogin");
             exit;
         }
         $userInfo=UserModel::all();
-
+        print_r($userInfo);
     }
 }
 
