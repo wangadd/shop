@@ -443,6 +443,7 @@ class WxController extends Controller
     public function test(){
         $url=urlencode('http:shop.test.com/wxlogin');
         echo $url;
+        echo 111;
     }
 
 }
