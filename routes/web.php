@@ -143,6 +143,16 @@ Route::any('/test/sign','Test\TestController@sign');
 Route::any('/test/sign1','Test\TestController@sign1');
 
 
+//考试登录试图
+Route::get('/kaoshi','Kaoshi\WorkController@index');
+
+Route::post('/kaoshi','Kaoshi\WorkController@doLogin');
+//展示
+Route::get('/show','Kaoshi\WorkController@show');
+//退出
+Route::get('/loginout','Kaoshi\WorkController@loginout');
+
+
 
 
 

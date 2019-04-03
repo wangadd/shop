@@ -24,6 +24,7 @@ class VerifyCsrfToken extends Middleware
         '/weixin/getmsg',
         '/weixin/pay/find',
         '/curl',
+        '/kaoshi',
 
     ];
 }
